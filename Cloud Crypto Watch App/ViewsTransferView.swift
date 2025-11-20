@@ -1,0 +1,93 @@
+//
+//  TransferView.swift
+//  Cloud Crypto Watch App
+//
+//  Created by Joel Cohen on 11/20/25.
+//
+
+import SwiftUI
+
+struct TransferView: View {
+    @Binding var toAccount: String
+    @Binding var amount: String
+    let isTransferring: Bool
+    let onSend: () -> Void
+    let onCancel: () -> Void
+    
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                Text("Transfer")
+                    .font(.headline)
+                    .padding(.top, 8)
+                
+                // To Account Input
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("To Account")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    TextField("Account ID", text: $toAccount)
+                        .textFieldStyle(.plain)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                }
+                
+                // Amount Input
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Amount")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    TextField("0.00", text: $amount)
+                        .textFieldStyle(.plain)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                }
+                
+                Divider()
+                    .padding(.vertical, 4)
+                
+                // Action Buttons
+                VStack(spacing: 8) {
+                    if isTransferring {
+                        ProgressView()
+                            .padding()
+                    } else {
+                        Button(action: onSend) {
+                            Text("SEND")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .disabled(toAccount.isEmpty || amount.isEmpty)
+                        
+                        Button(action: onCancel) {
+                            Text("CANCEL")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+#Preview {
+    TransferView(
+        toAccount: .constant(""),
+        amount: .constant(""),
+        isTransferring: false,
+        onSend: {},
+        onCancel: {}
+    )
+}

@@ -8,14 +8,114 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var viewModel = RegistrationViewModel()
+    @State private var showToast = false
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        ZStack {
+            // Main Content
+            Group {
+                switch viewModel.uiState {
+                case .mainScreen(let serialNumber, let timestamp):
+                    MainScreenView(
+                        serialNumber: serialNumber,
+                        timestamp: timestamp,
+                        onRegister: {
+                            viewModel.showRegistrationForm()
+                        },
+                        onDeregister: {
+                            viewModel.confirmDeregister()
+                        },
+                        onAccount: {
+                            viewModel.showAccountScreen()
+                        },
+                        onTransfer: {
+                            viewModel.showTransferScreen()
+                        },
+                        onSettings: {
+                            viewModel.showSettings()
+                        }
+                    )
+                    .confirmationDialog(
+                        "Are you sure you want to deregister?",
+                        isPresented: $viewModel.showDeregisterConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Deregister", role: .destructive) {
+                            viewModel.deregisterDevice()
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    }
+                    
+                case .registrationForm:
+                    RegistrationFormView(
+                        serialNumber: $viewModel.serialNumber,
+                        onRegister: {
+                            viewModel.registerDevice()
+                        },
+                        onGenerateSerial: {
+                            viewModel.generateSerialNumber()
+                        },
+                        onCancel: {
+                            viewModel.loadMainScreen()
+                        }
+                    )
+                    
+                case .accountSummary(let data):
+                    AccountSummaryView(
+                        data: data,
+                        onBack: {
+                            viewModel.loadMainScreen()
+                        }
+                    )
+                    
+                case .transferScreen:
+                    TransferView(
+                        toAccount: $viewModel.toAccount,
+                        amount: $viewModel.amount,
+                        isTransferring: viewModel.isTransferring,
+                        onSend: {
+                            viewModel.executeTransfer()
+                        },
+                        onCancel: {
+                            viewModel.cancelTransfer()
+                        }
+                    )
+                    
+                case .loading:
+                    LoadingView(message: "Processing...")
+                    
+                case .error(let message):
+                    ErrorView(
+                        message: message,
+                        onRetry: {
+                            viewModel.loadMainScreen()
+                        }
+                    )
+                }
+            }
+            
+            // Toast Overlay
+            if let message = viewModel.toastMessage {
+                VStack {
+                    Spacer()
+                    
+                    Text(message)
+                        .font(.caption)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.9))
+                        .cornerRadius(8)
+                        .padding(.bottom, 8)
+                }
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        viewModel.dismissToast()
+                    }
+                }
+            }
         }
-        .padding()
+        .animation(.easeInOut, value: viewModel.toastMessage)
     }
 }
 
