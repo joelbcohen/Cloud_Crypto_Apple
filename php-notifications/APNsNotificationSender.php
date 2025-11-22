@@ -175,18 +175,55 @@ class APNsNotificationSender {
             CURLOPT_HTTPHEADER => $headers,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_2_0,
-            CURLOPT_HEADER => true
+            CURLOPT_HEADER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2
         ]);
 
         // Execute request
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $curlError = curl_error($ch);
+        $curlErrno = curl_errno($ch);
 
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
+        // Get additional debug info
+        $effectiveUrl = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+        $httpVersion = curl_getinfo($ch, CURLINFO_HTTP_VERSION);
+
+        if ($curlErrno) {
             curl_close($ch);
-            throw new Exception("cURL error: $error");
+            throw new Exception(
+                "cURL error ($curlErrno): $curlError\n" .
+                "URL: $effectiveUrl\n" .
+                "This usually means a network connectivity issue."
+            );
+        }
+
+        // Check for HTTP Code 0 (connection failed)
+        if ($httpCode == 0) {
+            curl_close($ch);
+
+            // Try to provide helpful error message
+            $errorMsg = "Failed to connect to APNs server (HTTP Code 0)\n";
+            $errorMsg .= "URL: $effectiveUrl\n";
+            $errorMsg .= "Possible causes:\n";
+            $errorMsg .= "1. Network connectivity issue\n";
+            $errorMsg .= "2. Firewall blocking HTTPS connections\n";
+            $errorMsg .= "3. HTTP/2 not supported by your PHP/cURL installation\n";
+            $errorMsg .= "4. SSL/TLS configuration issue\n";
+            $errorMsg .= "\nTo debug:\n";
+            $errorMsg .= "- Run: php check-setup.php\n";
+            $errorMsg .= "- Check if you can reach: https://api.sandbox.push.apple.com\n";
+            $errorMsg .= "- Verify HTTP/2 support: curl --version | grep HTTP2\n";
+
+            if ($curlError) {
+                $errorMsg .= "\ncURL message: $curlError";
+            }
+
+            throw new Exception($errorMsg);
         }
 
         curl_close($ch);

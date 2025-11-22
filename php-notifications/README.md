@@ -59,7 +59,27 @@ return [
 ];
 ```
 
-### 4. Get Device Tokens
+### 4. Verify Your Setup
+
+Before sending notifications, run the diagnostic scripts to verify everything is configured correctly:
+
+```bash
+# Check configuration and find .p8 files
+php check-setup.php
+
+# Test network connectivity and HTTP/2 support
+php test-connection.php
+```
+
+The `test-connection.php` script will diagnose common issues like:
+- Missing HTTP/2 support
+- Network connectivity problems
+- Firewall blocking
+- SSL/TLS configuration issues
+
+**Important**: If you get "HTTP Code 0" errors, it means the connection to Apple's servers is failing. Run `test-connection.php` to diagnose the issue.
+
+### 5. Get Device Tokens
 
 Device tokens (stored as `fcmToken` in your database) are obtained when users register their Apple Watch. These tokens are sent to your server during the registration process.
 
@@ -317,6 +337,34 @@ For production use:
 5. Implement retry logic for temporary failures (500, 503 errors)
 
 ## Troubleshooting
+
+### HTTP Code 0 / Connection Failed
+
+If you get "HTTP Code 0" errors, this means PHP cannot connect to Apple's APNs servers. Run the diagnostic:
+
+```bash
+php test-connection.php
+```
+
+Common causes:
+1. **Missing HTTP/2 support** - APNs requires HTTP/2
+   - Check: `curl --version | grep HTTP2`
+   - Fix (macOS): `brew upgrade curl && brew reinstall php`
+   - The output should show "HTTP2" in features
+
+2. **Network/Firewall blocking**
+   - Ensure you can reach `https://api.sandbox.push.apple.com`
+   - Check firewall settings
+   - Try: `curl -v https://api.sandbox.push.apple.com`
+
+3. **cURL/OpenSSL version too old**
+   - Update cURL to latest version
+   - Ensure OpenSSL 1.0.2+ is installed
+   - Check: `php -i | grep -i curl`
+
+4. **PHP compiled without HTTP/2**
+   - You may need to recompile PHP with `--with-curl` using a newer libcurl
+   - Or use a different PHP installation (like from Homebrew on macOS)
 
 ### "Failed to load auth key"
 - Check the path to your .p8 file
