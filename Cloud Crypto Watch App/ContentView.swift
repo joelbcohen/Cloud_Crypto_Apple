@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var viewModel = RegistrationViewModel()
+    @EnvironmentObject private var apnsService: APNsService
     @State private var showToast = false
     
     var body: some View {
@@ -116,9 +117,19 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut, value: viewModel.toastMessage)
+        .onReceive(apnsService.$deviceToken) { token in
+            print("🟡 [ContentView.onReceive] deviceToken changed to: \(token ?? "nil")")
+            if let token = token {
+                print("🟡 [ContentView.onReceive] Calling viewModel.setAPNsToken")
+                viewModel.setAPNsToken(token)
+            } else {
+                print("🟡 [ContentView.onReceive] Token is nil, not setting")
+            }
+        }
     }
 }
 
 #Preview {
     ContentView()
+        .environmentObject(APNsService())
 }

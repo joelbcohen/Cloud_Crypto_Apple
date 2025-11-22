@@ -37,6 +37,7 @@ class RegistrationViewModel: ObservableObject {
     // MARK: - Initialization
     
     init() {
+        print("🟢 [RegistrationViewModel.init] ViewModel initialized, apnsToken is: \(apnsToken ?? "nil")")
         loadMainScreen()
     }
     
@@ -70,6 +71,12 @@ class RegistrationViewModel: ObservableObject {
         guard !serialNumber.isEmpty else {
             toastMessage = "Please enter a serial number"
             return
+        }
+        
+        if apnsToken == nil {
+            print("⚠️ WARNING: Registering without APNs token!")
+        } else {
+            print("📱 Registering with APNs token: \(apnsToken!)")
         }
         
         Task {
@@ -218,8 +225,9 @@ class RegistrationViewModel: ObservableObject {
     // MARK: - APNs
     
     func setAPNsToken(_ token: String) {
+        print("🟢 [RegistrationViewModel.setAPNsToken] Received token: \(token)")
         self.apnsToken = token
-        print("📱 APNs token set: \(token)")
+        print("🟢 [RegistrationViewModel.setAPNsToken] apnsToken stored: \(self.apnsToken ?? "nil")")
     }
     
     // MARK: - Settings

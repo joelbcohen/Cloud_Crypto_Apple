@@ -82,10 +82,18 @@ actor NetworkService {
     
     /// Register device with backend
     func registerDevice(_ request: RegistrationRequest) async throws -> RegistrationResponse {
+        print("🌐 [NetworkService] registerDevice called")
+        print("🌐 [NetworkService] request.fcmToken: \(request.fcmToken ?? "❌ NIL")")
+        
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .useDefaultKeys
         
         let body = try encoder.encode(request)
+        
+        // Log the actual JSON being sent
+        if let jsonString = String(data: body, encoding: .utf8) {
+            print("🌐 [NetworkService] Encoded JSON: \(jsonString)")
+        }
         
         return try await performRequest(
             endpoint: "/public/crypto/register",

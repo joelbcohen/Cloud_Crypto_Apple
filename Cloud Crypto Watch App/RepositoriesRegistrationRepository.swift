@@ -33,6 +33,10 @@ class RegistrationRepository {
     // MARK: - Registration
     
     func registerDevice(serialNumber: String, apnsToken: String?) async throws -> RegistrationResponse {
+        print("🔧 [Repository] registerDevice called")
+        print("🔧 [Repository] serialNumber: \(serialNumber)")
+        print("🔧 [Repository] apnsToken: \(apnsToken ?? "❌ NIL")")
+        
         // Generate key pair
         let keyPair = try await attestationService.generateKeyPair()
         
@@ -56,6 +60,11 @@ class RegistrationRepository {
             latitude: nil,
             longitude: nil
         )
+        
+        print("🔧 [Repository] Created RegistrationRequest:")
+        print("🔧 [Repository]   - fcmToken: \(request.fcmToken ?? "❌ NIL")")
+        print("🔧 [Repository]   - serialNumber: \(request.serialNumber)")
+        print("🔧 [Repository]   - id: \(request.id)")
         
         // Send registration request
         let response = try await networkService.registerDevice(request)
