@@ -349,7 +349,8 @@ php test-connection.php
 Common causes:
 1. **Missing HTTP/2 support** - APNs requires HTTP/2
    - Check: `curl --version | grep HTTP2`
-   - Fix (macOS): `brew upgrade curl && brew reinstall php`
+   - If HTTP2 is NOT shown, see **[HTTP2-FIX-GUIDE.md](HTTP2-FIX-GUIDE.md)** for detailed fix instructions
+   - Quick diagnostic: `chmod +x diagnose-http2.sh && ./diagnose-http2.sh`
    - The output should show "HTTP2" in features
 
 2. **Network/Firewall blocking**
