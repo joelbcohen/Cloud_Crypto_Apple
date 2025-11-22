@@ -13,11 +13,18 @@ struct Cloud_Crypto_Watch_AppApp: App {
     @StateObject private var apnsService = APNsService()
     @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate
     
+    init() {
+        // Store reference to APNsService for the extension delegate
+        // This will be set before the app scene is created
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(apnsService)
                 .onAppear {
+                    // Set the static reference after StateObject is initialized
+                    ExtensionDelegate.apnsService = apnsService
                     requestNotificationPermission()
                 }
         }
@@ -43,25 +50,33 @@ struct Cloud_Crypto_Watch_AppApp: App {
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
+    // Shared reference to APNsService
+    static var apnsService: APNsService?
+    
     func applicationDidFinishLaunching() {
         print("✅ Application did finish launching")
     }
     
     func didRegisterForRemoteNotifications(withDeviceToken deviceToken: Data) {
         print("✅ Registered for remote notifications")
-        // Get the APNsService instance and set the token
-        if let apnsService = WKExtension.shared().rootInterfaceController as? APNsService {
-            Task { @MainActor in
+        let tokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        print("📱 Device Token: \(tokenString)")
+        
+        // Set the token on the APNsService instance
+        Task { @MainActor in
+            if let apnsService = ExtensionDelegate.apnsService {
                 apnsService.setDeviceToken(deviceToken)
+                print("✅ Token set on APNsService")
+            } else {
+                print("⚠️ APNsService not available, broadcasting via NotificationCenter")
+                // Fallback: broadcast the token for other components
+                NotificationCenter.default.post(
+                    name: .apnsTokenReceived,
+                    object: nil,
+                    userInfo: ["token": deviceToken]
+                )
             }
         }
-        
-        // Also broadcast the token for other components
-        NotificationCenter.default.post(
-            name: .apnsTokenReceived,
-            object: nil,
-            userInfo: ["token": deviceToken]
-        )
     }
     
     func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {

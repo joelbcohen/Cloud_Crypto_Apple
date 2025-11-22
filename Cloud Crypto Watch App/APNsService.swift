@@ -41,8 +41,9 @@ class APNsService: NSObject, ObservableObject {
     
     func setDeviceToken(_ tokenData: Data) {
         let token = tokenData.map { String(format: "%02.2hhx", $0) }.joined()
+        print("🔵 [APNsService.setDeviceToken] Setting token: \(token)")
         self.deviceToken = token
-        print("APNs Device Token: \(token)")
+        print("🔵 [APNsService.setDeviceToken] Token stored, deviceToken is now: \(self.deviceToken ?? "nil")")
     }
     
     func handleRegistrationError(_ error: Error) {
