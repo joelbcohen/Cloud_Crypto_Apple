@@ -6,5 +6,7 @@
 # Configuration files with credentials
 apns-config-local.php
 
-# Test scripts with real tokens
-test-*.php
+# Test scripts with real tokens (but not diagnostic tools)
+test-send-*.php
+test-live-*.php
+my-test-*.php
