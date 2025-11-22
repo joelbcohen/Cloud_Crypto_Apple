@@ -58,9 +58,23 @@ class APNsNotificationSender {
         }
 
         // Load the private key
+        if (!file_exists($this->authKeyPath)) {
+            throw new Exception(
+                "Auth key file not found at: {$this->authKeyPath}\n" .
+                "Please check:\n" .
+                "1. The file exists at this location\n" .
+                "2. The path in apns-config.php is correct\n" .
+                "3. You have downloaded the .p8 file from Apple Developer Portal"
+            );
+        }
+
+        if (!is_readable($this->authKeyPath)) {
+            throw new Exception("Auth key file is not readable: {$this->authKeyPath}\nCheck file permissions.");
+        }
+
         $privateKey = file_get_contents($this->authKeyPath);
         if (!$privateKey) {
-            throw new Exception("Failed to load auth key from: {$this->authKeyPath}");
+            throw new Exception("Failed to read auth key from: {$this->authKeyPath}");
         }
 
         // Create JWT header
