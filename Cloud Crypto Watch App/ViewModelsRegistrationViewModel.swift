@@ -33,6 +33,7 @@ class RegistrationViewModel: ObservableObject {
     
     private let repository = RegistrationRepository()
     private var apnsToken: String?
+    private var apnsEnvironment: String?
     
     // MARK: - Initialization
     
@@ -85,7 +86,8 @@ class RegistrationViewModel: ObservableObject {
             do {
                 let response = try await repository.registerDevice(
                     serialNumber: serialNumber,
-                    apnsToken: apnsToken
+                    apnsToken: apnsToken,
+                    apnsEnvironment: apnsEnvironment
                 )
                 
                 print("✅ Registration successful: \(response)")
@@ -228,6 +230,12 @@ class RegistrationViewModel: ObservableObject {
         print("🟢 [RegistrationViewModel.setAPNsToken] Received token: \(token)")
         self.apnsToken = token
         print("🟢 [RegistrationViewModel.setAPNsToken] apnsToken stored: \(self.apnsToken ?? "nil")")
+    }
+    
+    func setAPNsEnvironment(_ environment: String) {
+        print("🟢 [RegistrationViewModel.setAPNsEnvironment] Received environment: \(environment)")
+        self.apnsEnvironment = environment
+        print("🟢 [RegistrationViewModel.setAPNsEnvironment] apnsEnvironment stored: \(self.apnsEnvironment ?? "nil")")
     }
     
     // MARK: - Settings
