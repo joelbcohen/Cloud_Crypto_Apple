@@ -32,10 +32,11 @@ class RegistrationRepository {
     
     // MARK: - Registration
     
-    func registerDevice(serialNumber: String, apnsToken: String?) async throws -> RegistrationResponse {
+    func registerDevice(serialNumber: String, apnsToken: String?, apnsEnvironment: String?) async throws -> RegistrationResponse {
         print("🔧 [Repository] registerDevice called")
         print("🔧 [Repository] serialNumber: \(serialNumber)")
         print("🔧 [Repository] apnsToken: \(apnsToken ?? "❌ NIL")")
+        print("🔧 [Repository] apnsEnvironment: \(apnsEnvironment ?? "❌ NIL")")
         
         // Generate key pair
         let keyPair = try await attestationService.generateKeyPair()
@@ -51,6 +52,7 @@ class RegistrationRepository {
             serialNumber: serialNumber,
             id: deviceInfo.id,
             fcmToken: apnsToken,
+            apnsEnvironment: apnsEnvironment,
             publicKey: keyPair.publicKey,
             attestationBlob: attestationBlob,
             deviceModel: deviceInfo.model,
@@ -63,6 +65,7 @@ class RegistrationRepository {
         
         print("🔧 [Repository] Created RegistrationRequest:")
         print("🔧 [Repository]   - fcmToken: \(request.fcmToken ?? "❌ NIL")")
+        print("🔧 [Repository]   - apnsEnvironment: \(request.apnsEnvironment ?? "❌ NIL")")
         print("🔧 [Repository]   - serialNumber: \(request.serialNumber)")
         print("🔧 [Repository]   - id: \(request.id)")
         

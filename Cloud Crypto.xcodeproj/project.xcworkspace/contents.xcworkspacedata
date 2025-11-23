@@ -4,4 +4,7 @@
    <FileRef
       location = "self:">
    </FileRef>
+   <FileRef
+      location = "group:TROUBLESHOOTING-BAD-DEVICE-TOKEN.md">
+   </FileRef>
 </Workspace>

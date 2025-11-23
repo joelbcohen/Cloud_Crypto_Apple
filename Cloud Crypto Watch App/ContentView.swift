@@ -126,6 +126,10 @@ struct ContentView: View {
                 print("🟡 [ContentView.onReceive] Token is nil, not setting")
             }
         }
+        .onReceive(apnsService.$tokenEnvironment) { environment in
+            print("🟡 [ContentView.onReceive] tokenEnvironment changed to: \(environment.rawValue)")
+            viewModel.setAPNsEnvironment(environment.rawValue)
+        }
     }
 }
 
