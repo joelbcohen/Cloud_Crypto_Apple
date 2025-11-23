@@ -66,14 +66,15 @@ struct MainScreenView: View {
                 // Action Buttons
                 VStack(spacing: 8) {
                     if isRegistered {
-                        Button(action: onDeregister) {
-                            Text("DE-REGISTER")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
+                        // DE-REGISTER button commented out
+                        // Button(action: onDeregister) {
+                        //     Text("DE-REGISTER")
+                        //         .font(.caption)
+                        //         .fontWeight(.semibold)
+                        //         .frame(maxWidth: .infinity)
+                        // }
+                        // .buttonStyle(.borderedProminent)
+                        // .tint(.red)
                         
                         Button(action: onAccount) {
                             Text("ACCOUNT")

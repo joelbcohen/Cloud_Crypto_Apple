@@ -13,7 +13,7 @@ internal import Combine
 enum RegistrationUiState: Equatable {
     case mainScreen(serialNumber: String?, timestamp: TimeInterval)
     case registrationForm
-    case accountSummary(data: AccountSummaryData)
+    case accountSummary(data: AccountSummaryData, transactions: [Transaction])
     case transferScreen
     case loading
     case error(message: String)
@@ -151,7 +151,8 @@ class RegistrationViewModel: ObservableObject {
                 let response = try await repository.getAccountSummary()
                 
                 if let accountData = response.account {
-                    uiState = .accountSummary(data: accountData)
+                    let transactions = response.transactions ?? []
+                    uiState = .accountSummary(data: accountData, transactions: transactions)
                 } else {
                     throw NSError(
                         domain: "CloudCrypto",

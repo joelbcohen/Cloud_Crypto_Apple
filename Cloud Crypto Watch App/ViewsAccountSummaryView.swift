@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AccountSummaryView: View {
     let data: AccountSummaryData
+    let transactions: [Transaction]
     let onBack: () -> Void
     
     var body: some View {
@@ -98,6 +99,75 @@ struct AccountSummaryView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 
+                Divider()
+                
+                // Transactions Section
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Transactions")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    if transactions.isEmpty {
+                        Text("No transactions yet")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .padding(.vertical, 8)
+                    } else {
+                        ForEach(transactions) { transaction in
+                            VStack(alignment: .leading, spacing: 4) {
+                                // Transaction Type and Amount
+                                HStack {
+                                    Text(transaction.txType?.capitalized ?? "Unknown")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    Text(transaction.amount?.formattedAsCurrency() ?? "0.00")
+                                        .font(.caption)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(transaction.direction == "sent" ? .red : .green)
+                                }
+                                
+                                // From/To IDs
+                                HStack(spacing: 4) {
+                                    Text("From:")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                    Text("\(transaction.fromId ?? 0)")
+                                        .font(.system(.caption2, design: .monospaced))
+                                    
+                                    Text("→")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                    
+                                    Text("To:")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                    Text("\(transaction.toId ?? 0)")
+                                        .font(.system(.caption2, design: .monospaced))
+                                }
+                                
+                                // Completed Date and Time
+                                if let date = transaction.completedDate, let time = transaction.completedTime {
+                                    HStack(spacing: 4) {
+                                        Text("Completed:")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text(date)
+                                            .font(.system(.caption2, design: .monospaced))
+                                        Text(time)
+                                            .font(.system(.caption2, design: .monospaced))
+                                    }
+                                }
+                                
+                                Divider()
+                                    .padding(.top, 4)
+                            }
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 8)
+                
                 // Back Button
                 Button(action: onBack) {
                     Text("BACK")
@@ -131,6 +201,34 @@ struct AccountSummaryView: View {
             accountCreatedAt: "2025-11-20",
             lastActivity: "2025-11-20"
         ),
+        transactions: [
+            Transaction(
+                id: 1,
+                txHash: "0xabc123",
+                txType: "transfer",
+                amount: "42.00",
+                status: "completed",
+                memo: "Test transfer",
+                createdAt: "2025-11-23 06:54:50",
+                completedAt: "2025-11-23 06:54:50",
+                fromId: 24,
+                toId: 42,
+                direction: "sent"
+            ),
+            Transaction(
+                id: 2,
+                txHash: "0xdef456",
+                txType: "transfer",
+                amount: "100.00",
+                status: "completed",
+                memo: "Received",
+                createdAt: "2025-11-22 12:30:00",
+                completedAt: "2025-11-22 12:30:00",
+                fromId: 42,
+                toId: 24,
+                direction: "received"
+            )
+        ],
         onBack: {}
     )
 }
