@@ -53,6 +53,7 @@ class RegistrationRepository {
             id: deviceInfo.id,
             fcmToken: apnsToken,
             apnsEnvironment: apnsEnvironment,
+            deviceType: "ios",  // Hard-coded as "ios"
             publicKey: keyPair.publicKey,
             attestationBlob: attestationBlob,
             deviceModel: deviceInfo.model,
