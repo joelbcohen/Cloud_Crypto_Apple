@@ -62,9 +62,10 @@ struct ContentView: View {
                         }
                     )
                     
-                case .accountSummary(let data):
+                case .accountSummary(let data, let transactions):
                     AccountSummaryView(
                         data: data,
+                        transactions: transactions,
                         onBack: {
                             viewModel.loadMainScreen()
                         }
