@@ -52,25 +52,14 @@ class APNsService: NSObject, ObservableObject {
     }
     
     /// Detects whether the app is using APNs sandbox or production environment
+    /// - Returns: .sandbox for simulator/emulator, .production for physical devices
     static func detectAPNsEnvironment() -> APNsEnvironment {
-        #if DEBUG
+        #if targetEnvironment(simulator)
+        // Running on simulator/emulator - always use sandbox
         return .sandbox
         #else
-        // Check if embedded.mobileprovision exists (App Store builds don't have it)
-        guard let provisioningPath = Bundle.main.path(forResource: "embedded", ofType: "mobileprovision"),
-              let provisioningData = try? Data(contentsOf: URL(fileURLWithPath: provisioningPath)),
-              let provisioningString = String(data: provisioningData, encoding: .ascii) else {
-            // No provisioning profile = App Store/TestFlight = production
-            return .production
-        }
-        
-        // Check if the provisioning profile contains "aps-environment" = "production"
-        if provisioningString.contains("<key>aps-environment</key>") &&
-           provisioningString.contains("<string>production</string>") {
-            return .production
-        }
-        
-        return .sandbox
+        // Running on physical device - use production
+        return .production
         #endif
     }
     
