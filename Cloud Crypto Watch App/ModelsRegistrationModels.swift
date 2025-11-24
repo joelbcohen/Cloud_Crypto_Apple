@@ -14,7 +14,7 @@ struct RegistrationRequest: Codable {
     let id: String  // Device identifier
     let fcmToken: String?  // APNs token for watchOS
     let apnsEnvironment: String?  // "sandbox" or "production"
-    let deviceType: String  // Hard-coded as "ios"
+    let deviceType: String  // Hard-coded as "android"
     let publicKey: String?
     let attestationBlob: String?
     let deviceModel: String?
