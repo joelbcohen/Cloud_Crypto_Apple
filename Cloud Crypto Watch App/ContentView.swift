@@ -25,7 +25,8 @@ struct ContentView: View {
                             viewModel.showRegistrationForm()
                         },
                         onDeregister: {
-                            viewModel.confirmDeregister()
+                            // Deregister functionality commented out
+                            // viewModel.confirmDeregister()
                         },
                         onAccount: {
                             viewModel.showAccountScreen()
@@ -37,16 +38,17 @@ struct ContentView: View {
                             viewModel.showSettings()
                         }
                     )
-                    .confirmationDialog(
-                        "Are you sure you want to deregister?",
-                        isPresented: $viewModel.showDeregisterConfirmation,
-                        titleVisibility: .visible
-                    ) {
-                        Button("Deregister", role: .destructive) {
-                            viewModel.deregisterDevice()
-                        }
-                        Button("Cancel", role: .cancel) {}
-                    }
+                    // Deregister confirmation dialog commented out
+                    // .confirmationDialog(
+                    //     "Are you sure you want to deregister?",
+                    //     isPresented: $viewModel.showDeregisterConfirmation,
+                    //     titleVisibility: .visible
+                    // ) {
+                    //     Button("Deregister", role: .destructive) {
+                    //         viewModel.deregisterDevice()
+                    //     }
+                    //     Button("Cancel", role: .cancel) {}
+                    // }
                     
                 case .registrationForm:
                     RegistrationFormView(
