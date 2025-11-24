@@ -11,7 +11,9 @@ struct AccountSummaryView: View {
     let data: AccountSummaryData
     let transactions: [Transaction]
     let onBack: () -> Void
-    
+
+    @State private var isTransactionHistoryExpanded = false
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -100,67 +102,92 @@ struct AccountSummaryView: View {
                 .padding(.vertical, 8)
                 
                 Divider()
-                
-                // Transactions Section
+
+                // Transaction History Dropdown
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Transactions")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    if transactions.isEmpty {
-                        Text("No transactions yet")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                            .padding(.vertical, 8)
-                    } else {
-                        ForEach(transactions) { transaction in
-                            VStack(alignment: .leading, spacing: 4) {
-                                // Transaction Type and Amount
-                                HStack {
-                                    Text(transaction.txType?.capitalized ?? "Unknown")
-                                        .font(.caption)
-                                        .fontWeight(.semibold)
-                                    Spacer()
-                                    Text(transaction.amount?.formattedAsCurrency() ?? "0.00")
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .foregroundColor(transaction.direction == "sent" ? .red : .green)
-                                }
-                                
-                                // From/To IDs
-                                HStack(spacing: 4) {
-                                    Text("From:")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                    Text("\(transaction.fromId ?? 0)")
-                                        .font(.system(.caption2, design: .monospaced))
-                                    
-                                    Text("→")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                    
-                                    Text("To:")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                    Text("\(transaction.toId ?? 0)")
-                                        .font(.system(.caption2, design: .monospaced))
-                                }
-                                
-                                // Completed Date and Time
-                                if let date = transaction.completedDate, let time = transaction.completedTime {
+                    // Dropdown Header Button
+                    Button(action: {
+                        withAnimation {
+                            isTransactionHistoryExpanded.toggle()
+                        }
+                    }) {
+                        HStack {
+                            Text("Transaction History")
+                                .font(.caption)
+                                .foregroundColor(.primary)
+
+                            if !transactions.isEmpty {
+                                Text("(\(transactions.count))")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: isTransactionHistoryExpanded ? "chevron.up" : "chevron.down")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+
+                    // Expandable Transactions List
+                    if isTransactionHistoryExpanded {
+                        if transactions.isEmpty {
+                            Text("No transactions yet")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                                .padding(.vertical, 8)
+                        } else {
+                            ForEach(transactions) { transaction in
+                                VStack(alignment: .leading, spacing: 4) {
+                                    // Transaction Type and Amount
+                                    HStack {
+                                        Text(transaction.txType?.capitalized ?? "Unknown")
+                                            .font(.caption)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                        Text(transaction.amount?.formattedAsCurrency() ?? "0.00")
+                                            .font(.caption)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(transaction.direction == "sent" ? .red : .green)
+                                    }
+
+                                    // From/To IDs
                                     HStack(spacing: 4) {
-                                        Text("Completed:")
+                                        Text("From:")
                                             .font(.caption2)
                                             .foregroundColor(.secondary)
-                                        Text(date)
+                                        Text("\(transaction.fromId ?? 0)")
                                             .font(.system(.caption2, design: .monospaced))
-                                        Text(time)
+
+                                        Text("→")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+
+                                        Text("To:")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text("\(transaction.toId ?? 0)")
                                             .font(.system(.caption2, design: .monospaced))
                                     }
+
+                                    // Completed Date and Time
+                                    if let date = transaction.completedDate, let time = transaction.completedTime {
+                                        HStack(spacing: 4) {
+                                            Text("Completed:")
+                                                .font(.caption2)
+                                                .foregroundColor(.secondary)
+                                            Text(date)
+                                                .font(.system(.caption2, design: .monospaced))
+                                            Text(time)
+                                                .font(.system(.caption2, design: .monospaced))
+                                        }
+                                    }
+
+                                    Divider()
+                                        .padding(.top, 4)
                                 }
-                                
-                                Divider()
-                                    .padding(.top, 4)
                             }
                         }
                     }
