@@ -12,6 +12,8 @@ struct AccountSummaryView: View {
     let transactions: [Transaction]
     let onBack: () -> Void
     
+    @State private var showTransactions = false
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -103,16 +105,34 @@ struct AccountSummaryView: View {
                 
                 // Transactions Section
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Transactions")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    HStack {
+                        Text("Transactions")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                    }
+                    
+                    // Show/Hide History Button
+                    if !transactions.isEmpty {
+                        Button(action: {
+                            withAnimation {
+                                showTransactions.toggle()
+                            }
+                        }) {
+                            Text(showTransactions ? "HIDE HISTORY" : "SHOW HISTORY")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
+                    }
                     
                     if transactions.isEmpty {
                         Text("No transactions yet")
                             .font(.caption2)
                             .foregroundColor(.secondary)
                             .padding(.vertical, 8)
-                    } else {
+                    } else if showTransactions {
                         ForEach(transactions) { transaction in
                             VStack(alignment: .leading, spacing: 4) {
                                 // Transaction Type and Amount
