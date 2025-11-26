@@ -146,16 +146,26 @@ struct AccountSummaryView: View {
                                         .font(.system(.caption2, design: .monospaced))
                                 }
                                 
+                                // Memo
+                                if let memo = transaction.memo, !memo.isEmpty {
+                                    HStack(spacing: 4) {
+                                        Text("Memo:")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                        Text(memo)
+                                            .font(.caption2)
+                                            .lineLimit(2)
+                                    }
+                                }
+                                
                                 // Completed Date and Time
-                                if let date = transaction.completedDate, let time = transaction.completedTime {
+                                if let formattedDate = transaction.formattedCompletedAt {
                                     HStack(spacing: 4) {
                                         Text("Completed:")
                                             .font(.caption2)
                                             .foregroundColor(.secondary)
-                                        Text(date)
-                                            .font(.system(.caption2, design: .monospaced))
-                                        Text(time)
-                                            .font(.system(.caption2, design: .monospaced))
+                                        Text(formattedDate)
+                                            .font(.caption2)
                                     }
                                 }
                                 
