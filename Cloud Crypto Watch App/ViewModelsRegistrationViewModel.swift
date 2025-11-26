@@ -15,6 +15,7 @@ enum RegistrationUiState: Equatable {
     case registrationForm
     case accountSummary(data: AccountSummaryData, transactions: [Transaction])
     case transferScreen
+    case networkStatus(ledgerStats: LedgerStats, iosCount: Int, androidCount: Int)
     case loading
     case error(message: String)
 }
@@ -240,6 +241,39 @@ class RegistrationViewModel: ObservableObject {
         print("🟢 [RegistrationViewModel.setAPNsEnvironment] Received environment: \(environment)")
         self.apnsEnvironment = environment
         print("🟢 [RegistrationViewModel.setAPNsEnvironment] apnsEnvironment stored: \(self.apnsEnvironment ?? "nil")")
+    }
+    
+    // MARK: - Network Status
+    
+    func showNetworkStatus() {
+        Task {
+            uiState = .loading
+            
+            do {
+                let response = try await repository.getNetworkStatus()
+                
+                let ledgerStats = response.ledgerStats ?? LedgerStats(
+                    totalAccounts: 0,
+                    totalTransactions: 0,
+                    totalMints: 0,
+                    totalTransfers: 0,
+                    totalMinted: 0
+                )
+                let iosCount = response.deviceStats?.ios?.count ?? 0
+                let androidCount = response.deviceStats?.android?.count ?? 0
+                
+                uiState = .networkStatus(
+                    ledgerStats: ledgerStats,
+                    iosCount: iosCount,
+                    androidCount: androidCount
+                )
+                
+            } catch {
+                print("❌ Failed to load network status: \(error)")
+                toastMessage = "Failed to load network status: \(error.localizedDescription)"
+                uiState = .error(message: error.localizedDescription)
+            }
+        }
     }
     
     // MARK: - Settings

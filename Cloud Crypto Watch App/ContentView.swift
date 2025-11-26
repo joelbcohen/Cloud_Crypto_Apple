@@ -33,6 +33,9 @@ struct ContentView: View {
                         onTransfer: {
                             viewModel.showTransferScreen()
                         },
+                        onNetwork: {
+                            viewModel.showNetworkStatus()
+                        },
                         onSettings: {
                             viewModel.showSettings()
                         }
@@ -82,6 +85,16 @@ struct ContentView: View {
                         },
                         onCancel: {
                             viewModel.cancelTransfer()
+                        }
+                    )
+                    
+                case .networkStatus(let ledgerStats, let iosCount, let androidCount):
+                    NetworkStatusView(
+                        ledgerStats: ledgerStats,
+                        iosCount: iosCount,
+                        androidCount: androidCount,
+                        onBack: {
+                            viewModel.loadMainScreen()
                         }
                     )
                     

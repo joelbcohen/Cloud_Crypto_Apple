@@ -14,6 +14,7 @@ struct MainScreenView: View {
     let onDeregister: () -> Void
     let onAccount: () -> Void
     let onTransfer: () -> Void
+    let onNetwork: () -> Void
     let onSettings: () -> Void
     
     private var isRegistered: Bool {
@@ -92,13 +93,22 @@ struct MainScreenView: View {
                         }
                         .buttonStyle(.bordered)
                         
-                        Button(action: onSettings) {
-                            Text("SETTINGS")
+                        Button(action: onNetwork) {
+                            Text("NETWORK")
                                 .font(.caption)
                                 .fontWeight(.semibold)
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.bordered)
+                        
+                        // SETTINGS button commented out - will implement later
+                        // Button(action: onSettings) {
+                        //     Text("SETTINGS")
+                        //         .font(.caption)
+                        //         .fontWeight(.semibold)
+                        //         .frame(maxWidth: .infinity)
+                        // }
+                        // .buttonStyle(.bordered)
                     } else {
                         Button(action: onRegister) {
                             Text("REGISTER")
@@ -124,6 +134,7 @@ struct MainScreenView: View {
         onDeregister: {},
         onAccount: {},
         onTransfer: {},
+        onNetwork: {},
         onSettings: {}
     )
 }

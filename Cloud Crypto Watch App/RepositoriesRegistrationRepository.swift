@@ -172,6 +172,18 @@ class RegistrationRepository {
         return try await networkService.executeTransfer(request)
     }
     
+    // MARK: - Network Status
+    
+    func getNetworkStatus() async throws -> NetworkStatusResponse {
+        print("🌐 Fetching network status...")
+        
+        let response = try await networkService.getNetworkStatus()
+        
+        print("✅ Network status fetched successfully")
+        
+        return response
+    }
+    
     // MARK: - Device Info
     
     func generateSerialNumber() async -> String {

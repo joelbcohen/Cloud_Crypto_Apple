@@ -137,4 +137,13 @@ actor NetworkService {
             body: body
         )
     }
+    
+    /// Get network status
+    func getNetworkStatus() async throws -> NetworkStatusResponse {
+        return try await performRequest(
+            endpoint: "/public/crypto/network_status",
+            method: "GET",
+            body: nil
+        )
+    }
 }
