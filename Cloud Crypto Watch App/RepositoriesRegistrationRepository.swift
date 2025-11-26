@@ -150,7 +150,7 @@ class RegistrationRepository {
     
     // MARK: - Transfer
     
-    func executeTransfer(toAccountId: String, amount: String) async throws -> TransferResponse {
+    func executeTransfer(toAccountId: String, amount: String, memo: String?) async throws -> TransferResponse {
         let status = loadRegistrationStatus()
         
         guard let serialNumber = status.serialNumber,
@@ -165,7 +165,8 @@ class RegistrationRepository {
             publicKey: publicKey,
             attestationBlob: attestationBlob,
             toAccountId: toAccountId,
-            amount: amount
+            amount: amount,
+            memo: memo
         )
         
         return try await networkService.executeTransfer(request)

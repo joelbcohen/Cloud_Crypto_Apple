@@ -10,6 +10,7 @@ import SwiftUI
 struct TransferView: View {
     @Binding var toAccount: String
     @Binding var amount: String
+    @Binding var memo: String
     let isTransferring: Bool
     let onSend: () -> Void
     let onCancel: () -> Void
@@ -49,6 +50,20 @@ struct TransferView: View {
                         .cornerRadius(8)
                 }
                 
+                // Memo Input
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Memo (Optional)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    TextField("Note for this transfer", text: $memo)
+                        .textFieldStyle(.plain)
+                        .padding(8)
+                        .background(Color.gray.opacity(0.2))
+                        .cornerRadius(8)
+                        .textInputAutocapitalization(.sentences)
+                }
+                
                 Divider()
                     .padding(.vertical, 4)
                 
@@ -86,6 +101,7 @@ struct TransferView: View {
     TransferView(
         toAccount: .constant(""),
         amount: .constant(""),
+        memo: .constant(""),
         isTransferring: false,
         onSend: {},
         onCancel: {}

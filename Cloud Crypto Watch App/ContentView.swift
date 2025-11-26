@@ -75,6 +75,7 @@ struct ContentView: View {
                     TransferView(
                         toAccount: $viewModel.toAccount,
                         amount: $viewModel.amount,
+                        memo: $viewModel.memo,
                         isTransferring: viewModel.isTransferring,
                         onSend: {
                             viewModel.executeTransfer()

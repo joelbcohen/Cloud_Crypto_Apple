@@ -64,6 +64,24 @@ struct Transaction: Codable, Identifiable, Equatable {
         let components = completedAt.split(separator: " ")
         return components.count > 1 ? String(components[1]) : nil
     }
+    
+    var formattedCompletedAt: String? {
+        guard let completedAt = completedAt else { return nil }
+        
+        // Create date formatter to parse the input
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        guard let date = inputFormatter.date(from: completedAt) else { return nil }
+        
+        // Create date formatter for output: "Nov 25 2025 1:34 PM"
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "MMM d yyyy h:mm a"
+        outputFormatter.locale = Locale(identifier: "en_US")
+        
+        return outputFormatter.string(from: date)
+    }
 }
 
 // MARK: - Account Summary Data
@@ -108,6 +126,7 @@ struct TransferRequest: Codable {
     let attestationBlob: String
     let toAccountId: String
     let amount: String
+    let memo: String?
 }
 
 // MARK: - Transfer Response

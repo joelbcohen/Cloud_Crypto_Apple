@@ -28,6 +28,7 @@ class RegistrationViewModel: ObservableObject {
     @Published var toastMessage: String?
     @Published var toAccount: String = ""
     @Published var amount: String = ""
+    @Published var memo: String = ""
     @Published var isTransferring: Bool = false
     @Published var showDeregisterConfirmation: Bool = false
     
@@ -175,6 +176,7 @@ class RegistrationViewModel: ObservableObject {
         uiState = .transferScreen
         toAccount = ""
         amount = ""
+        memo = ""
     }
     
     func onToAccountChanged(_ newValue: String) {
@@ -202,7 +204,8 @@ class RegistrationViewModel: ObservableObject {
             do {
                 let response = try await repository.executeTransfer(
                     toAccountId: toAccount,
-                    amount: amount
+                    amount: amount,
+                    memo: memo.isEmpty ? nil : memo
                 )
                 
                 print("✅ Transfer successful: \(response)")
