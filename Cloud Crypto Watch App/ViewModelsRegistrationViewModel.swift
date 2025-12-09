@@ -76,30 +76,52 @@ class RegistrationViewModel: ObservableObject {
             toastMessage = "Please enter a serial number"
             return
         }
-        
+
         if apnsToken == nil {
             print("⚠️ WARNING: Registering without APNs token!")
         } else {
             print("📱 Registering with APNs token: \(apnsToken!)")
         }
-        
+
         Task {
             uiState = .loading
-            
+
             do {
                 let response = try await repository.registerDevice(
                     serialNumber: serialNumber,
                     apnsToken: apnsToken,
                     apnsEnvironment: apnsEnvironment
                 )
-                
+
                 print("✅ Registration successful: \(response)")
-                
+
+                // Fetch account summary to ensure account ID is populated
+                do {
+                    let accountResponse = try await repository.getAccountSummary()
+                    if let accountData = accountResponse.account, let accountId = accountData.id {
+                        // Update stored account ID
+                        let currentStatus = repository.loadRegistrationStatus()
+                        let updatedStatus = RegistrationStatus(
+                            isRegistered: currentStatus.isRegistered,
+                            serialNumber: currentStatus.serialNumber,
+                            registrationTimestamp: currentStatus.registrationTimestamp,
+                            publicKey: currentStatus.publicKey,
+                            privateKey: currentStatus.privateKey,
+                            accountId: accountId
+                        )
+                        repository.saveRegistrationStatus(updatedStatus)
+                        print("✅ Account ID \(accountId) saved after registration")
+                    }
+                } catch {
+                    print("⚠️ Failed to fetch account ID after registration: \(error)")
+                    // Continue anyway - account ID will be populated when user views account screen
+                }
+
                 toastMessage = response.message ?? "Registration successful"
-                
-                // Return to main screen
+
+                // Return to main screen with updated account ID
                 loadMainScreen()
-                
+
             } catch {
                 print("❌ Registration failed: \(error)")
                 toastMessage = "Registration failed: \(error.localizedDescription)"
