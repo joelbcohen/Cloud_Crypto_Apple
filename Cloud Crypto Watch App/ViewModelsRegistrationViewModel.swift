@@ -145,15 +145,31 @@ class RegistrationViewModel: ObservableObject {
     }
     
     // MARK: - Account Screen
-    
+
     func showAccountScreen() {
         Task {
             uiState = .loading
-            
+
             do {
                 let response = try await repository.getAccountSummary()
-                
+
                 if let accountData = response.account {
+                    // Update stored account ID if available and not already saved
+                    if let accountId = accountData.id {
+                        let currentStatus = repository.loadRegistrationStatus()
+                        if currentStatus.accountId != accountId {
+                            let updatedStatus = RegistrationStatus(
+                                isRegistered: currentStatus.isRegistered,
+                                serialNumber: currentStatus.serialNumber,
+                                registrationTimestamp: currentStatus.registrationTimestamp,
+                                publicKey: currentStatus.publicKey,
+                                privateKey: currentStatus.privateKey,
+                                accountId: accountId
+                            )
+                            repository.saveRegistrationStatus(updatedStatus)
+                        }
+                    }
+
                     let transactions = response.transactions ?? []
                     uiState = .accountSummary(data: accountData, transactions: transactions)
                 } else {
@@ -163,7 +179,7 @@ class RegistrationViewModel: ObservableObject {
                         userInfo: [NSLocalizedDescriptionKey: response.message ?? "No account data"]
                     )
                 }
-                
+
             } catch {
                 print("❌ Failed to load account: \(error)")
                 toastMessage = "Failed to load account: \(error.localizedDescription)"
