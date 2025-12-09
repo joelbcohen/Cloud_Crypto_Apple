@@ -33,7 +33,7 @@ actor DeviceInfoService {
     func generateSerialNumber() -> String {
         // Generate UUID, remove hyphens, and take first 20 characters
         let uuid = UUID().uuidString.replacingOccurrences(of: "-", with: "")
-        return String(uuid.prefix(20)).uppercased()
+        return String(uuid.prefix(10)).uppercased()
     }
     
     /// Collects all device information for registration
