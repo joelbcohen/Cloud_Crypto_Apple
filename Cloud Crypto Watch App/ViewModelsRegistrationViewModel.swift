@@ -11,7 +11,7 @@ internal import Combine
 
 /// UI State enum for different screens
 enum RegistrationUiState: Equatable {
-    case mainScreen(serialNumber: String?, timestamp: TimeInterval)
+    case mainScreen(serialNumber: String?, accountId: Int?, timestamp: TimeInterval)
     case registrationForm
     case accountSummary(data: AccountSummaryData, transactions: [Transaction])
     case transferScreen
@@ -52,10 +52,11 @@ class RegistrationViewModel: ObservableObject {
         if status.isRegistered {
             uiState = .mainScreen(
                 serialNumber: status.serialNumber,
+                accountId: status.accountId,
                 timestamp: status.registrationTimestamp
             )
         } else {
-            uiState = .mainScreen(serialNumber: nil, timestamp: 0)
+            uiState = .mainScreen(serialNumber: nil, accountId: nil, timestamp: 0)
         }
     }
     
@@ -288,3 +289,4 @@ class RegistrationViewModel: ObservableObject {
         toastMessage = nil
     }
 }
+
