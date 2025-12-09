@@ -14,6 +14,7 @@ struct RegistrationStatus {
     let registrationTimestamp: TimeInterval
     let publicKey: String?
     let privateKey: String?
+    let accountId: Int?
     
     static var empty: RegistrationStatus {
         RegistrationStatus(
@@ -21,7 +22,9 @@ struct RegistrationStatus {
             serialNumber: nil,
             registrationTimestamp: 0,
             publicKey: nil,
-            privateKey: nil
+            privateKey: nil,
+            accountId: nil
         )
     }
 }
+

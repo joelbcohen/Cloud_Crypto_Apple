@@ -13,6 +13,8 @@ struct AccountSummaryView: View {
     let onBack: () -> Void
     
     @State private var showTransactions = false
+    private let swipeThreshold: CGFloat = 40
+    private let verticalTolerance: CGFloat = 30
     
     var body: some View {
         ScrollView {
@@ -198,18 +200,21 @@ struct AccountSummaryView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 
-                // Back Button
-                Button(action: onBack) {
-                    Text("BACK")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .padding(.top, 8)
+                // Back button removed; swipe gesture handles back
             }
             .padding()
         }
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture(minimumDistance: 10, coordinateSpace: .local)
+                .onEnded { value in
+                    let horizontal = value.translation.width
+                    let vertical = abs(value.translation.height)
+                    if horizontal > swipeThreshold && vertical < verticalTolerance {
+                        onBack()
+                    }
+                }
+        )
     }
 }
 
@@ -231,34 +236,7 @@ struct AccountSummaryView: View {
             accountCreatedAt: "2025-11-20",
             lastActivity: "2025-11-20"
         ),
-        transactions: [
-            Transaction(
-                id: 1,
-                txHash: "0xabc123",
-                txType: "transfer",
-                amount: "42.00",
-                status: "completed",
-                memo: "Test transfer",
-                createdAt: "2025-11-23 06:54:50",
-                completedAt: "2025-11-23 06:54:50",
-                fromId: 24,
-                toId: 42,
-                direction: "sent"
-            ),
-            Transaction(
-                id: 2,
-                txHash: "0xdef456",
-                txType: "transfer",
-                amount: "100.00",
-                status: "completed",
-                memo: "Received",
-                createdAt: "2025-11-22 12:30:00",
-                completedAt: "2025-11-22 12:30:00",
-                fromId: 42,
-                toId: 24,
-                direction: "received"
-            )
-        ],
+        transactions: [],
         onBack: {}
     )
 }
