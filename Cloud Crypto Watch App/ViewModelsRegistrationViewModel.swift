@@ -11,7 +11,7 @@ internal import Combine
 
 /// UI State enum for different screens
 enum RegistrationUiState: Equatable {
-    case mainScreen(serialNumber: String?, timestamp: TimeInterval)
+    case mainScreen(serialNumber: String?, timestamp: TimeInterval, accountId: Int?)
     case registrationForm
     case accountSummary(data: AccountSummaryData, transactions: [Transaction])
     case transferScreen
@@ -48,14 +48,15 @@ class RegistrationViewModel: ObservableObject {
     
     func loadMainScreen() {
         let status = repository.loadRegistrationStatus()
-        
+
         if status.isRegistered {
             uiState = .mainScreen(
                 serialNumber: status.serialNumber,
-                timestamp: status.registrationTimestamp
+                timestamp: status.registrationTimestamp,
+                accountId: status.accountId
             )
         } else {
-            uiState = .mainScreen(serialNumber: nil, timestamp: 0)
+            uiState = .mainScreen(serialNumber: nil, timestamp: 0, accountId: nil)
         }
     }
     

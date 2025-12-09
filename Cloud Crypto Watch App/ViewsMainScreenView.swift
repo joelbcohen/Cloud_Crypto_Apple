@@ -10,13 +10,14 @@ import SwiftUI
 struct MainScreenView: View {
     let serialNumber: String?
     let timestamp: TimeInterval
+    let accountId: Int?
     let onRegister: () -> Void
     let onDeregister: () -> Void
     let onAccount: () -> Void
     let onTransfer: () -> Void
     let onNetwork: () -> Void
     let onSettings: () -> Void
-    
+
     private var isRegistered: Bool {
         serialNumber != nil
     }
@@ -40,14 +41,27 @@ struct MainScreenView: View {
                     Text("Serial Number")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     Text(serialNumber ?? "---")
                         .font(.system(.body, design: .monospaced))
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)
                 }
                 .padding(.vertical, 8)
-                
+
+                // Account ID Section
+                if isRegistered, let accountId = accountId {
+                    VStack(spacing: 4) {
+                        Text("Account ID")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Text("\(accountId)")
+                            .font(.system(.body, design: .monospaced))
+                    }
+                    .padding(.vertical, 8)
+                }
+
                 // Date Registered Section
                 if isRegistered {
                     VStack(spacing: 4) {
@@ -130,6 +144,7 @@ struct MainScreenView: View {
     MainScreenView(
         serialNumber: "ABC-123-DEF-456",
         timestamp: Date().timeIntervalSince1970,
+        accountId: 42,
         onRegister: {},
         onDeregister: {},
         onAccount: {},

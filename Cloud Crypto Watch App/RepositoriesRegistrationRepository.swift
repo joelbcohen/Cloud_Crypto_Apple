@@ -72,17 +72,18 @@ class RegistrationRepository {
         
         // Send registration request
         let response = try await networkService.registerDevice(request)
-        
+
         // Save registration status
         let status = RegistrationStatus(
             isRegistered: true,
             serialNumber: serialNumber,
             registrationTimestamp: Date().timeIntervalSince1970,
             publicKey: keyPair.publicKey,
-            privateKey: keyPair.privateKey
+            privateKey: keyPair.privateKey,
+            accountId: response.accountId
         )
         saveRegistrationStatus(status)
-        
+
         return response
     }
     

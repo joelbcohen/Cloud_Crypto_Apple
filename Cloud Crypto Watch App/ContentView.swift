@@ -17,10 +17,11 @@ struct ContentView: View {
             // Main Content
             Group {
                 switch viewModel.uiState {
-                case .mainScreen(let serialNumber, let timestamp):
+                case .mainScreen(let serialNumber, let timestamp, let accountId):
                     MainScreenView(
                         serialNumber: serialNumber,
                         timestamp: timestamp,
+                        accountId: accountId,
                         onRegister: {
                             viewModel.showRegistrationForm()
                         },
