@@ -48,6 +48,12 @@ struct MainScreenView: View {
                         .minimumScaleFactor(0.5)
                 }
                 .padding(.vertical, 8)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if !isRegistered {
+                        onRegister()
+                    }
+                }
 
                 // Account ID Section
                 if isRegistered, let accountId = accountId {
