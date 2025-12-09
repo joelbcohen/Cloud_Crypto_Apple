@@ -19,7 +19,6 @@ class UserDefaultsManager {
         static let registrationTimestamp = "registration_timestamp"
         static let publicKey = "public_key"
         static let privateKey = "private_key"
-        static let accountId = "account_id"
     }
     
     private let defaults: UserDefaults
@@ -38,7 +37,6 @@ class UserDefaultsManager {
         defaults.set(status.registrationTimestamp, forKey: Keys.registrationTimestamp)
         defaults.set(status.publicKey, forKey: Keys.publicKey)
         defaults.set(status.privateKey, forKey: Keys.privateKey)
-        defaults.set(status.accountId, forKey: Keys.accountId)
     }
     
     func loadRegistrationStatus() -> RegistrationStatus {
@@ -47,15 +45,13 @@ class UserDefaultsManager {
         let timestamp = defaults.double(forKey: Keys.registrationTimestamp)
         let publicKey = defaults.string(forKey: Keys.publicKey)
         let privateKey = defaults.string(forKey: Keys.privateKey)
-        let accountIdValue = defaults.object(forKey: Keys.accountId) as? Int
         
         return RegistrationStatus(
             isRegistered: isRegistered,
             serialNumber: serialNumber,
             registrationTimestamp: timestamp,
             publicKey: publicKey,
-            privateKey: privateKey,
-            accountId: accountIdValue
+            privateKey: privateKey
         )
     }
     
@@ -65,7 +61,5 @@ class UserDefaultsManager {
         defaults.removeObject(forKey: Keys.registrationTimestamp)
         defaults.removeObject(forKey: Keys.publicKey)
         defaults.removeObject(forKey: Keys.privateKey)
-        defaults.removeObject(forKey: Keys.accountId)
     }
 }
-

@@ -167,12 +167,9 @@ struct CloudCryptoComplication: Widget {
 
 // MARK: - Preview
 
-#if os(watchOS)
-@available(watchOS 10.0, *)
 #Preview(as: .accessoryCircular) {
     CloudCryptoComplication()
 } timeline: {
     CloudCryptoComplicationEntry(date: Date(), isRegistered: true)
     CloudCryptoComplicationEntry(date: Date(), isRegistered: false)
 }
-#endif

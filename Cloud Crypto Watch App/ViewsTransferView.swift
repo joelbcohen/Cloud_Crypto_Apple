@@ -15,9 +15,6 @@ struct TransferView: View {
     let onSend: () -> Void
     let onCancel: () -> Void
     
-    private let swipeThreshold: CGFloat = 40
-    private let verticalTolerance: CGFloat = 30
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -85,23 +82,18 @@ struct TransferView: View {
                         .buttonStyle(.borderedProminent)
                         .disabled(toAccount.isEmpty || amount.isEmpty)
                         
-                        // Cancel button removed; swipe handles cancel/back
+                        Button(action: onCancel) {
+                            Text("CANCEL")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
             }
             .padding()
         }
-        .contentShape(Rectangle())
-        .gesture(
-            DragGesture(minimumDistance: 10, coordinateSpace: .local)
-                .onEnded { value in
-                    let horizontal = value.translation.width
-                    let vertical = abs(value.translation.height)
-                    if horizontal > swipeThreshold && vertical < verticalTolerance {
-                        onCancel()
-                    }
-                }
-        )
     }
 }
 

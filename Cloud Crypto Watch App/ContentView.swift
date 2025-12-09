@@ -17,10 +17,9 @@ struct ContentView: View {
             // Main Content
             Group {
                 switch viewModel.uiState {
-                case .mainScreen(let serialNumber, let accountId, let timestamp):
+                case .mainScreen(let serialNumber, let timestamp):
                     MainScreenView(
                         serialNumber: serialNumber,
-                        accountId: accountId,
                         timestamp: timestamp,
                         onRegister: {
                             viewModel.showRegistrationForm()
@@ -153,4 +152,3 @@ struct ContentView: View {
     ContentView()
         .environmentObject(APNsService())
 }
-

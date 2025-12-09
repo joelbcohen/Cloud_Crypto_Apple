@@ -9,7 +9,6 @@ import SwiftUI
 
 struct MainScreenView: View {
     let serialNumber: String?
-    let accountId: Int?
     let timestamp: TimeInterval
     let onRegister: () -> Void
     let onDeregister: () -> Void
@@ -48,21 +47,6 @@ struct MainScreenView: View {
                         .minimumScaleFactor(0.5)
                 }
                 .padding(.vertical, 8)
-                
-                // Account ID Section (under serial number)
-                if isRegistered {
-                    VStack(spacing: 4) {
-                        Text("Account ID")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        
-                        Text(accountId.map(String.init) ?? "---")
-                            .font(.system(.body, design: .monospaced))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.5)
-                    }
-                    .padding(.bottom, 4)
-                }
                 
                 // Date Registered Section
                 if isRegistered {
@@ -145,7 +129,6 @@ struct MainScreenView: View {
 #Preview {
     MainScreenView(
         serialNumber: "ABC-123-DEF-456",
-        accountId: 42,
         timestamp: Date().timeIntervalSince1970,
         onRegister: {},
         onDeregister: {},
@@ -155,4 +138,3 @@ struct MainScreenView: View {
         onSettings: {}
     )
 }
-

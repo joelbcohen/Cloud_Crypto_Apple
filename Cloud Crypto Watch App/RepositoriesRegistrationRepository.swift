@@ -73,14 +73,13 @@ class RegistrationRepository {
         // Send registration request
         let response = try await networkService.registerDevice(request)
         
-        // Save registration status (including accountId if provided)
+        // Save registration status
         let status = RegistrationStatus(
             isRegistered: true,
             serialNumber: serialNumber,
             registrationTimestamp: Date().timeIntervalSince1970,
             publicKey: keyPair.publicKey,
-            privateKey: keyPair.privateKey,
-            accountId: response.accountId
+            privateKey: keyPair.privateKey
         )
         saveRegistrationStatus(status)
         
@@ -146,19 +145,6 @@ class RegistrationRepository {
         
         print("✅ Account summary fetched successfully")
         
-        // If account id is present, persist it so the home screen can show it
-        if let accountId = response.account?.id {
-            let updated = RegistrationStatus(
-                isRegistered: status.isRegistered,
-                serialNumber: status.serialNumber,
-                registrationTimestamp: status.registrationTimestamp,
-                publicKey: status.publicKey,
-                privateKey: status.privateKey,
-                accountId: accountId
-            )
-            saveRegistrationStatus(updated)
-        }
-        
         return response
     }
     
@@ -217,4 +203,3 @@ enum RepositoryError: Error, LocalizedError {
         }
     }
 }
-

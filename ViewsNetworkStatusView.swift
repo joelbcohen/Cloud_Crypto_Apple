@@ -13,9 +13,6 @@ struct NetworkStatusView: View {
     let androidCount: Int
     let onBack: () -> Void
     
-    private let swipeThreshold: CGFloat = 40
-    private let verticalTolerance: CGFloat = 30
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -122,21 +119,18 @@ struct NetworkStatusView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
                 
-                // Back button removed; swipe gesture handles back
+                // Back Button
+                Button(action: onBack) {
+                    Text("BACK")
+                        .font(.caption)
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .padding(.top, 8)
             }
             .padding()
         }
-        .contentShape(Rectangle())
-        .gesture(
-            DragGesture(minimumDistance: 10, coordinateSpace: .local)
-                .onEnded { value in
-                    let horizontal = value.translation.width
-                    let vertical = abs(value.translation.height)
-                    if horizontal > swipeThreshold && vertical < verticalTolerance {
-                        onBack()
-                    }
-                }
-        )
     }
 }
 
