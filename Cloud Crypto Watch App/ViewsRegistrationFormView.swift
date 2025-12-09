@@ -12,7 +12,9 @@ struct RegistrationFormView: View {
     let onRegister: () -> Void
     let onGenerateSerial: () -> Void
     let onCancel: () -> Void
-    
+
+    @State private var dragOffset: CGFloat = 0
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -58,18 +60,30 @@ struct RegistrationFormView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(serialNumber.isEmpty)
-                    
-                    Button(action: onCancel) {
-                        Text("CANCEL")
-                            .font(.caption)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
                 }
             }
             .padding()
         }
+        .offset(x: dragOffset)
+        .gesture(
+            DragGesture()
+                .onChanged { gesture in
+                    // Only allow rightward swipes
+                    if gesture.translation.width > 0 {
+                        dragOffset = gesture.translation.width
+                    }
+                }
+                .onEnded { gesture in
+                    // Trigger cancel if swipe distance > 50 or velocity is high enough
+                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
+                        onCancel()
+                    }
+                    // Reset offset
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        dragOffset = 0
+                    }
+                }
+        )
     }
 }
 

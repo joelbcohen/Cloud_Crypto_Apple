@@ -11,8 +11,9 @@ struct AccountSummaryView: View {
     let data: AccountSummaryData
     let transactions: [Transaction]
     let onBack: () -> Void
-    
+
     @State private var showTransactions = false
+    @State private var dragOffset: CGFloat = 0
     
     var body: some View {
         ScrollView {
@@ -197,19 +198,29 @@ struct AccountSummaryView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.vertical, 8)
-                
-                // Back Button
-                Button(action: onBack) {
-                    Text("BACK")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.bordered)
-                .padding(.top, 8)
             }
             .padding()
         }
+        .offset(x: dragOffset)
+        .gesture(
+            DragGesture()
+                .onChanged { gesture in
+                    // Only allow rightward swipes
+                    if gesture.translation.width > 0 {
+                        dragOffset = gesture.translation.width
+                    }
+                }
+                .onEnded { gesture in
+                    // Trigger back if swipe distance > 50 or velocity is high enough
+                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
+                        onBack()
+                    }
+                    // Reset offset
+                    withAnimation(.easeOut(duration: 0.2)) {
+                        dragOffset = 0
+                    }
+                }
+        )
     }
 }
 

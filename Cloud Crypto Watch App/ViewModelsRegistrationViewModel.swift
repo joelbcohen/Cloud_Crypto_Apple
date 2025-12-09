@@ -11,7 +11,7 @@ internal import Combine
 
 /// UI State enum for different screens
 enum RegistrationUiState: Equatable {
-    case mainScreen(serialNumber: String?, timestamp: TimeInterval)
+    case mainScreen(serialNumber: String?, timestamp: TimeInterval, accountId: Int?)
     case registrationForm
     case accountSummary(data: AccountSummaryData, transactions: [Transaction])
     case transferScreen
@@ -48,14 +48,15 @@ class RegistrationViewModel: ObservableObject {
     
     func loadMainScreen() {
         let status = repository.loadRegistrationStatus()
-        
+
         if status.isRegistered {
             uiState = .mainScreen(
                 serialNumber: status.serialNumber,
-                timestamp: status.registrationTimestamp
+                timestamp: status.registrationTimestamp,
+                accountId: status.accountId
             )
         } else {
-            uiState = .mainScreen(serialNumber: nil, timestamp: 0)
+            uiState = .mainScreen(serialNumber: nil, timestamp: 0, accountId: nil)
         }
     }
     
@@ -75,30 +76,52 @@ class RegistrationViewModel: ObservableObject {
             toastMessage = "Please enter a serial number"
             return
         }
-        
+
         if apnsToken == nil {
             print("⚠️ WARNING: Registering without APNs token!")
         } else {
             print("📱 Registering with APNs token: \(apnsToken!)")
         }
-        
+
         Task {
             uiState = .loading
-            
+
             do {
                 let response = try await repository.registerDevice(
                     serialNumber: serialNumber,
                     apnsToken: apnsToken,
                     apnsEnvironment: apnsEnvironment
                 )
-                
+
                 print("✅ Registration successful: \(response)")
-                
+
+                // Fetch account summary to ensure account ID is populated
+                do {
+                    let accountResponse = try await repository.getAccountSummary()
+                    if let accountData = accountResponse.account, let accountId = accountData.id {
+                        // Update stored account ID
+                        let currentStatus = repository.loadRegistrationStatus()
+                        let updatedStatus = RegistrationStatus(
+                            isRegistered: currentStatus.isRegistered,
+                            serialNumber: currentStatus.serialNumber,
+                            registrationTimestamp: currentStatus.registrationTimestamp,
+                            publicKey: currentStatus.publicKey,
+                            privateKey: currentStatus.privateKey,
+                            accountId: accountId
+                        )
+                        repository.saveRegistrationStatus(updatedStatus)
+                        print("✅ Account ID \(accountId) saved after registration")
+                    }
+                } catch {
+                    print("⚠️ Failed to fetch account ID after registration: \(error)")
+                    // Continue anyway - account ID will be populated when user views account screen
+                }
+
                 toastMessage = response.message ?? "Registration successful"
-                
-                // Return to main screen
+
+                // Return to main screen with updated account ID
                 loadMainScreen()
-                
+
             } catch {
                 print("❌ Registration failed: \(error)")
                 toastMessage = "Registration failed: \(error.localizedDescription)"
@@ -144,15 +167,31 @@ class RegistrationViewModel: ObservableObject {
     }
     
     // MARK: - Account Screen
-    
+
     func showAccountScreen() {
         Task {
             uiState = .loading
-            
+
             do {
                 let response = try await repository.getAccountSummary()
-                
+
                 if let accountData = response.account {
+                    // Update stored account ID if available and not already saved
+                    if let accountId = accountData.id {
+                        let currentStatus = repository.loadRegistrationStatus()
+                        if currentStatus.accountId != accountId {
+                            let updatedStatus = RegistrationStatus(
+                                isRegistered: currentStatus.isRegistered,
+                                serialNumber: currentStatus.serialNumber,
+                                registrationTimestamp: currentStatus.registrationTimestamp,
+                                publicKey: currentStatus.publicKey,
+                                privateKey: currentStatus.privateKey,
+                                accountId: accountId
+                            )
+                            repository.saveRegistrationStatus(updatedStatus)
+                        }
+                    }
+
                     let transactions = response.transactions ?? []
                     uiState = .accountSummary(data: accountData, transactions: transactions)
                 } else {
@@ -162,7 +201,7 @@ class RegistrationViewModel: ObservableObject {
                         userInfo: [NSLocalizedDescriptionKey: response.message ?? "No account data"]
                     )
                 }
-                
+
             } catch {
                 print("❌ Failed to load account: \(error)")
                 toastMessage = "Failed to load account: \(error.localizedDescription)"
