@@ -141,3 +141,49 @@ struct TransferResponse: Codable {
     let fcmNotificationSent: Bool?
     let newBalance: String?
 }
+
+// MARK: - Network Status Response
+
+struct NetworkStatusResponse: Codable {
+    let status: String?
+    let message: String?
+    let ledgerStats: LedgerStats?
+    let deviceStats: DeviceStats?
+
+    enum CodingKeys: String, CodingKey {
+        case status, message
+        case ledgerStats = "ledger_stats"
+        case deviceStats = "device_stats"
+    }
+}
+
+// MARK: - Ledger Stats
+
+struct LedgerStats: Codable, Equatable {
+    let totalAccounts: Int
+    let totalTransactions: Int
+    let totalMints: Int
+    let totalTransfers: Int
+    let totalMinted: String
+
+    enum CodingKeys: String, CodingKey {
+        case totalAccounts = "total_accounts"
+        case totalTransactions = "total_transactions"
+        case totalMints = "total_mints"
+        case totalTransfers = "total_transfers"
+        case totalMinted = "total_minted"
+    }
+}
+
+// MARK: - Device Stats
+
+struct DeviceStats: Codable, Equatable {
+    let ios: DevicePlatformStats?
+    let android: DevicePlatformStats?
+}
+
+// MARK: - Device Platform Stats
+
+struct DevicePlatformStats: Codable, Equatable {
+    let count: Int
+}

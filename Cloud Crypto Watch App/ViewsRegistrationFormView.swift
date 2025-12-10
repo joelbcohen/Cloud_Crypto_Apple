@@ -11,9 +11,6 @@ struct RegistrationFormView: View {
     @Binding var serialNumber: String
     let onRegister: () -> Void
     let onGenerateSerial: () -> Void
-    let onCancel: () -> Void
-
-    @State private var dragOffset: CGFloat = 0
 
     var body: some View {
         ScrollView {
@@ -64,26 +61,8 @@ struct RegistrationFormView: View {
             }
             .padding()
         }
-        .offset(x: dragOffset)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    // Only allow rightward swipes
-                    if gesture.translation.width > 0 {
-                        dragOffset = gesture.translation.width
-                    }
-                }
-                .onEnded { gesture in
-                    // Trigger cancel if swipe distance > 50 or velocity is high enough
-                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
-                        onCancel()
-                    }
-                    // Reset offset
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        dragOffset = 0
-                    }
-                }
-        )
+        .navigationTitle("Register")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -91,7 +70,6 @@ struct RegistrationFormView: View {
     RegistrationFormView(
         serialNumber: .constant(""),
         onRegister: {},
-        onGenerateSerial: {},
-        onCancel: {}
+        onGenerateSerial: {}
     )
 }

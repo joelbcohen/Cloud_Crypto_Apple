@@ -9,62 +9,61 @@ import Foundation
 import SwiftUI
 internal import Combine
 
-/// UI State enum for different screens
-enum RegistrationUiState: Equatable {
-    case mainScreen(serialNumber: String?, timestamp: TimeInterval, accountId: Int?)
+/// Navigation destinations for NavigationStack
+enum NavigationDestination: Hashable {
     case registrationForm
     case accountSummary(data: AccountSummaryData, transactions: [Transaction])
     case transferScreen
     case networkStatus(ledgerStats: LedgerStats, iosCount: Int, androidCount: Int)
-    case loading
-    case error(message: String)
 }
 
 /// Main view model for the app
 @MainActor
 class RegistrationViewModel: ObservableObject {
-    
-    @Published var uiState: RegistrationUiState = .loading
+
+    @Published var navigationPath = NavigationPath()
     @Published var serialNumber: String = ""
+    @Published var registeredSerialNumber: String?
+    @Published var registrationTimestamp: TimeInterval = 0
+    @Published var accountId: Int?
     @Published var toastMessage: String?
     @Published var toAccount: String = ""
     @Published var amount: String = ""
     @Published var memo: String = ""
     @Published var isTransferring: Bool = false
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
     @Published var showDeregisterConfirmation: Bool = false
-    
+
     private let repository = RegistrationRepository()
     private var apnsToken: String?
     private var apnsEnvironment: String?
     
     // MARK: - Initialization
-    
+
     init() {
         print("🟢 [RegistrationViewModel.init] ViewModel initialized, apnsToken is: \(apnsToken ?? "nil")")
-        loadMainScreen()
+        loadRegistrationStatus()
     }
-    
-    // MARK: - Main Screen
-    
-    func loadMainScreen() {
-        let status = repository.loadRegistrationStatus()
 
-        if status.isRegistered {
-            uiState = .mainScreen(
-                serialNumber: status.serialNumber,
-                timestamp: status.registrationTimestamp,
-                accountId: status.accountId
-            )
-        } else {
-            uiState = .mainScreen(serialNumber: nil, timestamp: 0, accountId: nil)
-        }
+    // MARK: - Main Screen
+
+    func loadRegistrationStatus() {
+        let status = repository.loadRegistrationStatus()
+        registeredSerialNumber = status.serialNumber
+        registrationTimestamp = status.registrationTimestamp
+        accountId = status.accountId
+    }
+
+    var isRegistered: Bool {
+        registeredSerialNumber != nil
     }
     
     // MARK: - Registration Form
-    
+
     func showRegistrationForm() {
-        uiState = .registrationForm
         serialNumber = ""
+        navigationPath.append(NavigationDestination.registrationForm)
     }
     
     func onSerialNumberChanged(_ newValue: String) {
@@ -84,7 +83,7 @@ class RegistrationViewModel: ObservableObject {
         }
 
         Task {
-            uiState = .loading
+            isLoading = true
 
             do {
                 let response = try await repository.registerDevice(
@@ -119,13 +118,16 @@ class RegistrationViewModel: ObservableObject {
 
                 toastMessage = response.message ?? "Registration successful"
 
-                // Return to main screen with updated account ID
-                loadMainScreen()
+                // Return to main screen - remove all navigation paths
+                loadRegistrationStatus()
+                navigationPath.removeLast(navigationPath.count)
+                isLoading = false
 
             } catch {
                 print("❌ Registration failed: \(error)")
                 toastMessage = "Registration failed: \(error.localizedDescription)"
-                uiState = .error(message: error.localizedDescription)
+                errorMessage = error.localizedDescription
+                isLoading = false
             }
         }
     }
@@ -144,24 +146,27 @@ class RegistrationViewModel: ObservableObject {
     
     func deregisterDevice() {
         showDeregisterConfirmation = false
-        
+
         Task {
-            uiState = .loading
-            
+            isLoading = true
+
             do {
                 let response = try await repository.deregisterDevice()
-                
+
                 print("✅ Deregistration successful: \(response)")
-                
+
                 toastMessage = response.message ?? "Deregistration successful"
-                
+
                 // Return to main screen
-                loadMainScreen()
-                
+                loadRegistrationStatus()
+                navigationPath.removeLast(navigationPath.count)
+                isLoading = false
+
             } catch {
                 print("❌ Deregistration failed: \(error)")
                 toastMessage = "Deregistration failed: \(error.localizedDescription)"
-                loadMainScreen()
+                loadRegistrationStatus()
+                isLoading = false
             }
         }
     }
@@ -170,7 +175,7 @@ class RegistrationViewModel: ObservableObject {
 
     func showAccountScreen() {
         Task {
-            uiState = .loading
+            isLoading = true
 
             do {
                 let response = try await repository.getAccountSummary()
@@ -193,7 +198,8 @@ class RegistrationViewModel: ObservableObject {
                     }
 
                     let transactions = response.transactions ?? []
-                    uiState = .accountSummary(data: accountData, transactions: transactions)
+                    isLoading = false
+                    navigationPath.append(NavigationDestination.accountSummary(data: accountData, transactions: transactions))
                 } else {
                     throw NSError(
                         domain: "CloudCrypto",
@@ -205,18 +211,19 @@ class RegistrationViewModel: ObservableObject {
             } catch {
                 print("❌ Failed to load account: \(error)")
                 toastMessage = "Failed to load account: \(error.localizedDescription)"
-                uiState = .error(message: error.localizedDescription)
+                errorMessage = error.localizedDescription
+                isLoading = false
             }
         }
     }
     
     // MARK: - Transfer Screen
-    
+
     func showTransferScreen() {
-        uiState = .transferScreen
         toAccount = ""
         amount = ""
         memo = ""
+        navigationPath.append(NavigationDestination.transferScreen)
     }
     
     func onToAccountChanged(_ newValue: String) {
@@ -232,30 +239,30 @@ class RegistrationViewModel: ObservableObject {
             toastMessage = "Please enter destination account"
             return
         }
-        
+
         guard !amount.isEmpty, Double(amount) != nil else {
             toastMessage = "Please enter valid amount"
             return
         }
-        
+
         Task {
             isTransferring = true
-            
+
             do {
                 let response = try await repository.executeTransfer(
                     toAccountId: toAccount,
                     amount: amount,
                     memo: memo.isEmpty ? nil : memo
                 )
-                
+
                 print("✅ Transfer successful: \(response)")
-                
+
                 toastMessage = response.message ?? "Transfer successful"
-                
+
                 // Return to main screen
                 isTransferring = false
-                loadMainScreen()
-                
+                navigationPath.removeLast(navigationPath.count)
+
             } catch {
                 print("❌ Transfer failed: \(error)")
                 toastMessage = "Transfer failed: \(error.localizedDescription)"
@@ -263,9 +270,11 @@ class RegistrationViewModel: ObservableObject {
             }
         }
     }
-    
+
     func cancelTransfer() {
-        loadMainScreen()
+        if !navigationPath.isEmpty {
+            navigationPath.removeLast()
+        }
     }
     
     // MARK: - APNs
@@ -283,34 +292,36 @@ class RegistrationViewModel: ObservableObject {
     }
     
     // MARK: - Network Status
-    
+
     func showNetworkStatus() {
         Task {
-            uiState = .loading
-            
+            isLoading = true
+
             do {
                 let response = try await repository.getNetworkStatus()
-                
+
                 let ledgerStats = response.ledgerStats ?? LedgerStats(
                     totalAccounts: 0,
                     totalTransactions: 0,
                     totalMints: 0,
                     totalTransfers: 0,
-                    totalMinted: 0
+                    totalMinted: "0"
                 )
                 let iosCount = response.deviceStats?.ios?.count ?? 0
                 let androidCount = response.deviceStats?.android?.count ?? 0
-                
-                uiState = .networkStatus(
+
+                isLoading = false
+                navigationPath.append(NavigationDestination.networkStatus(
                     ledgerStats: ledgerStats,
                     iosCount: iosCount,
                     androidCount: androidCount
-                )
-                
+                ))
+
             } catch {
                 print("❌ Failed to load network status: \(error)")
                 toastMessage = "Failed to load network status: \(error.localizedDescription)"
-                uiState = .error(message: error.localizedDescription)
+                errorMessage = error.localizedDescription
+                isLoading = false
             }
         }
     }

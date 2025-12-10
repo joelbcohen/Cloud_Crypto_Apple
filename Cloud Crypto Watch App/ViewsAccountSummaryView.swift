@@ -10,10 +10,8 @@ import SwiftUI
 struct AccountSummaryView: View {
     let data: AccountSummaryData
     let transactions: [Transaction]
-    let onBack: () -> Void
 
     @State private var showTransactions = false
-    @State private var dragOffset: CGFloat = 0
     
     var body: some View {
         ScrollView {
@@ -201,26 +199,8 @@ struct AccountSummaryView: View {
             }
             .padding()
         }
-        .offset(x: dragOffset)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    // Only allow rightward swipes
-                    if gesture.translation.width > 0 {
-                        dragOffset = gesture.translation.width
-                    }
-                }
-                .onEnded { gesture in
-                    // Trigger back if swipe distance > 50 or velocity is high enough
-                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
-                        onBack()
-                    }
-                    // Reset offset
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        dragOffset = 0
-                    }
-                }
-        )
+        .navigationTitle("Account")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -269,7 +249,6 @@ struct AccountSummaryView: View {
                 toId: 24,
                 direction: "received"
             )
-        ],
-        onBack: {}
+        ]
     )
 }
