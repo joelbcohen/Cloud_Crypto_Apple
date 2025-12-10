@@ -77,19 +77,20 @@ struct TransferView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .disabled(toAccount.isEmpty || amount.isEmpty)
+
+                        Button(action: onCancel) {
+                            Text("CANCEL")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .buttonStyle(.bordered)
                     }
                 }
             }
             .padding()
         }
         .navigationTitle("Transfer")
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    onCancel()
-                }
-            }
-        }
     }
 }
 
