@@ -80,6 +80,18 @@ struct ContentView: View {
                 viewModel.clearPopNavigation()
             }
         }
+        // Sync uiState when navigation returns to root (e.g., back button pressed)
+        .onChange(of: navigationPath) { _, newPath in
+            if newPath.isEmpty {
+                // If we're at root but uiState is for a pushed view, reset to main screen
+                switch viewModel.uiState {
+                case .accountSummary, .networkStatus, .registrationForm, .transferScreen:
+                    viewModel.loadMainScreen()
+                default:
+                    break
+                }
+            }
+        }
     }
 
     // MARK: - Main Content View
