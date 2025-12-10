@@ -133,6 +133,7 @@ class RegistrationViewModel: ObservableObject {
 
                 // Return to main screen with updated account ID
                 loadMainScreen()
+                popNavigation()
 
             } catch {
                 print("❌ Registration failed: \(error)")
