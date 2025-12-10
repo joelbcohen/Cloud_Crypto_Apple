@@ -20,10 +20,18 @@ enum RegistrationUiState: Equatable {
     case error(message: String)
 }
 
+/// Navigation destination type (mirrored from ContentView for ViewModel use)
+enum ViewModelNavigationDestination: Hashable {
+    case registration
+    case account
+    case transfer
+    case network
+}
+
 /// Main view model for the app
 @MainActor
 class RegistrationViewModel: ObservableObject {
-    
+
     @Published var uiState: RegistrationUiState = .loading
     @Published var serialNumber: String = ""
     @Published var toastMessage: String?
@@ -32,7 +40,11 @@ class RegistrationViewModel: ObservableObject {
     @Published var memo: String = ""
     @Published var isTransferring: Bool = false
     @Published var showDeregisterConfirmation: Bool = false
-    
+
+    // Navigation support for NavigationStack
+    @Published var navigationRequest: NavigationDestination?
+    @Published var shouldPopNavigation: Bool = false
+
     private let repository = RegistrationRepository()
     private var apnsToken: String?
     private var apnsEnvironment: String?
@@ -322,8 +334,22 @@ class RegistrationViewModel: ObservableObject {
     }
     
     // MARK: - Toast
-    
+
     func dismissToast() {
         toastMessage = nil
+    }
+
+    // MARK: - Navigation Helpers
+
+    func clearNavigationRequest() {
+        navigationRequest = nil
+    }
+
+    func clearPopNavigation() {
+        shouldPopNavigation = false
+    }
+
+    func popNavigation() {
+        shouldPopNavigation = true
     }
 }
