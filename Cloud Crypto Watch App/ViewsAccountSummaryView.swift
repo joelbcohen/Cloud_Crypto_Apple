@@ -10,18 +10,12 @@ import SwiftUI
 struct AccountSummaryView: View {
     let data: AccountSummaryData
     let transactions: [Transaction]
-    let onBack: () -> Void
 
     @State private var showTransactions = false
-    @State private var dragOffset: CGFloat = 0
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("Account Summary")
-                    .font(.headline)
-                    .padding(.top, 8)
-                
                 // Current Balance
                 VStack(spacing: 4) {
                     Text("Current Balance")
@@ -201,75 +195,57 @@ struct AccountSummaryView: View {
             }
             .padding()
         }
-        .offset(x: dragOffset)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    // Only allow rightward swipes
-                    if gesture.translation.width > 0 {
-                        dragOffset = gesture.translation.width
-                    }
-                }
-                .onEnded { gesture in
-                    // Trigger back if swipe distance > 50 or velocity is high enough
-                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
-                        onBack()
-                    }
-                    // Reset offset
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        dragOffset = 0
-                    }
-                }
-        )
+        .navigationTitle("Account")
     }
 }
 
 #Preview {
-    AccountSummaryView(
-        data: AccountSummaryData(
-            id: 28,
-            balance: "12345.67",
-            serialNumber: "TEST-123",
-            serialHash: "hash123",
-            model: "Apple Watch Series 9",
-            brand: "Apple",
-            osVersion: "10.0",
-            nodeId: "node1",
-            totalSentTransactions: 5,
-            totalReceivedTransactions: 3,
-            totalSentAmount: "1234.56",
-            totalReceivedAmount: "11111.11",
-            accountCreatedAt: "2025-11-20",
-            lastActivity: "2025-11-20"
-        ),
-        transactions: [
-            Transaction(
-                id: 1,
-                txHash: "0xabc123",
-                txType: "transfer",
-                amount: "42.00",
-                status: "completed",
-                memo: "Test transfer",
-                createdAt: "2025-11-23 06:54:50",
-                completedAt: "2025-11-23 06:54:50",
-                fromId: 24,
-                toId: 42,
-                direction: "sent"
+    NavigationStack {
+        AccountSummaryView(
+            data: AccountSummaryData(
+                id: 28,
+                balance: "12345.67",
+                serialNumber: "TEST-123",
+                serialHash: "hash123",
+                model: "Apple Watch Series 9",
+                brand: "Apple",
+                osVersion: "10.0",
+                nodeId: "node1",
+                totalSentTransactions: 5,
+                totalReceivedTransactions: 3,
+                totalSentAmount: "1234.56",
+                totalReceivedAmount: "11111.11",
+                accountCreatedAt: "2025-11-20",
+                lastActivity: "2025-11-20"
             ),
-            Transaction(
-                id: 2,
-                txHash: "0xdef456",
-                txType: "transfer",
-                amount: "100.00",
-                status: "completed",
-                memo: "Received",
-                createdAt: "2025-11-22 12:30:00",
-                completedAt: "2025-11-22 12:30:00",
-                fromId: 42,
-                toId: 24,
-                direction: "received"
-            )
-        ],
-        onBack: {}
-    )
+            transactions: [
+                Transaction(
+                    id: 1,
+                    txHash: "0xabc123",
+                    txType: "transfer",
+                    amount: "42.00",
+                    status: "completed",
+                    memo: "Test transfer",
+                    createdAt: "2025-11-23 06:54:50",
+                    completedAt: "2025-11-23 06:54:50",
+                    fromId: 24,
+                    toId: 42,
+                    direction: "sent"
+                ),
+                Transaction(
+                    id: 2,
+                    txHash: "0xdef456",
+                    txType: "transfer",
+                    amount: "100.00",
+                    status: "completed",
+                    memo: "Received",
+                    createdAt: "2025-11-22 12:30:00",
+                    completedAt: "2025-11-22 12:30:00",
+                    fromId: 42,
+                    toId: 24,
+                    direction: "received"
+                )
+            ]
+        )
+    }
 }

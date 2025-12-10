@@ -14,20 +14,16 @@ struct TransferView: View {
     let isTransferring: Bool
     let onSend: () -> Void
     let onCancel: () -> Void
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("Transfer")
-                    .font(.headline)
-                    .padding(.top, 8)
-                
                 // To Account Input
                 VStack(alignment: .leading, spacing: 4) {
                     Text("To Account")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     TextField("Account ID", text: $toAccount)
                         .textFieldStyle(.plain)
                         .padding(8)
@@ -36,26 +32,26 @@ struct TransferView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
-                
+
                 // Amount Input
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Amount")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     TextField("0.00", text: $amount)
                         .textFieldStyle(.plain)
                         .padding(8)
                         .background(Color.gray.opacity(0.2))
                         .cornerRadius(8)
                 }
-                
+
                 // Memo Input
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Memo (Optional)")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     TextField("Note for this transfer", text: $memo)
                         .textFieldStyle(.plain)
                         .padding(8)
@@ -63,10 +59,10 @@ struct TransferView: View {
                         .cornerRadius(8)
                         .textInputAutocapitalization(.sentences)
                 }
-                
+
                 Divider()
                     .padding(.vertical, 4)
-                
+
                 // Action Buttons
                 VStack(spacing: 8) {
                     if isTransferring {
@@ -81,29 +77,31 @@ struct TransferView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .disabled(toAccount.isEmpty || amount.isEmpty)
-                        
-                        Button(action: onCancel) {
-                            Text("CANCEL")
-                                .font(.caption)
-                                .fontWeight(.semibold)
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
                     }
                 }
             }
             .padding()
         }
+        .navigationTitle("Transfer")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    onCancel()
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    TransferView(
-        toAccount: .constant(""),
-        amount: .constant(""),
-        memo: .constant(""),
-        isTransferring: false,
-        onSend: {},
-        onCancel: {}
-    )
+    NavigationStack {
+        TransferView(
+            toAccount: .constant(""),
+            amount: .constant(""),
+            memo: .constant(""),
+            isTransferring: false,
+            onSend: {},
+            onCancel: {}
+        )
+    }
 }

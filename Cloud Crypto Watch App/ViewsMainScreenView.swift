@@ -31,11 +31,6 @@ struct MainScreenView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
-                // Header
-                Text("Cloud Crypto")
-                    .font(.headline)
-                    .padding(.top, 8)
-                
                 // Serial Number Section
                 VStack(spacing: 4) {
                     Text("Serial Number")
@@ -147,15 +142,18 @@ struct MainScreenView: View {
 }
 
 #Preview {
-    MainScreenView(
-        serialNumber: "ABC-123-DEF-456",
-        timestamp: Date().timeIntervalSince1970,
-        accountId: 42,
-        onRegister: {},
-        onDeregister: {},
-        onAccount: {},
-        onTransfer: {},
-        onNetwork: {},
-        onSettings: {}
-    )
+    NavigationStack {
+        MainScreenView(
+            serialNumber: "ABC-123-DEF-456",
+            timestamp: Date().timeIntervalSince1970,
+            accountId: 42,
+            onRegister: {},
+            onDeregister: {},
+            onAccount: {},
+            onTransfer: {},
+            onNetwork: {},
+            onSettings: {}
+        )
+        .navigationTitle("Cloud Crypto")
+    }
 }

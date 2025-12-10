@@ -13,21 +13,15 @@ struct RegistrationFormView: View {
     let onGenerateSerial: () -> Void
     let onCancel: () -> Void
 
-    @State private var dragOffset: CGFloat = 0
-
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("Register Device")
-                    .font(.headline)
-                    .padding(.top, 8)
-                
                 // Serial Number Input
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Serial Number")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    
+
                     TextField("Enter serial number", text: $serialNumber)
                         .textFieldStyle(.plain)
                         .padding(8)
@@ -35,7 +29,7 @@ struct RegistrationFormView: View {
                         .cornerRadius(8)
                         .textInputAutocapitalization(.characters)
                 }
-                
+
                 // Generate Button
                 Button(action: onGenerateSerial) {
                     HStack {
@@ -46,10 +40,10 @@ struct RegistrationFormView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.bordered)
-                
+
                 Divider()
                     .padding(.vertical, 4)
-                
+
                 // Action Buttons
                 VStack(spacing: 8) {
                     Button(action: onRegister) {
@@ -64,34 +58,24 @@ struct RegistrationFormView: View {
             }
             .padding()
         }
-        .offset(x: dragOffset)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    // Only allow rightward swipes
-                    if gesture.translation.width > 0 {
-                        dragOffset = gesture.translation.width
-                    }
+        .navigationTitle("Register")
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Cancel") {
+                    onCancel()
                 }
-                .onEnded { gesture in
-                    // Trigger cancel if swipe distance > 50 or velocity is high enough
-                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
-                        onCancel()
-                    }
-                    // Reset offset
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        dragOffset = 0
-                    }
-                }
-        )
+            }
+        }
     }
 }
 
 #Preview {
-    RegistrationFormView(
-        serialNumber: .constant(""),
-        onRegister: {},
-        onGenerateSerial: {},
-        onCancel: {}
-    )
+    NavigationStack {
+        RegistrationFormView(
+            serialNumber: .constant(""),
+            onRegister: {},
+            onGenerateSerial: {},
+            onCancel: {}
+        )
+    }
 }
