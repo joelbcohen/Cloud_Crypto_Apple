@@ -11,17 +11,10 @@ struct NetworkStatusView: View {
     let ledgerStats: LedgerStats
     let iosCount: Int
     let androidCount: Int
-    let onBack: () -> Void
-
-    @State private var dragOffset: CGFloat = 0
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("Network Status")
-                    .font(.headline)
-                    .padding(.top, 8)
-                
                 Divider()
                 
                 // Ledger Statistics
@@ -123,26 +116,7 @@ struct NetworkStatusView: View {
             }
             .padding()
         }
-        .offset(x: dragOffset)
-        .gesture(
-            DragGesture()
-                .onChanged { gesture in
-                    // Only allow rightward swipes
-                    if gesture.translation.width > 0 {
-                        dragOffset = gesture.translation.width
-                    }
-                }
-                .onEnded { gesture in
-                    // Trigger back if swipe distance > 50 or velocity is high enough
-                    if gesture.translation.width > 50 || gesture.predictedEndTranslation.width > 100 {
-                        onBack()
-                    }
-                    // Reset offset
-                    withAnimation(.easeOut(duration: 0.2)) {
-                        dragOffset = 0
-                    }
-                }
-        )
+        .navigationTitle("Network")
     }
 }
 
@@ -158,16 +132,17 @@ extension Int {
 }
 
 #Preview {
-    NetworkStatusView(
-        ledgerStats: LedgerStats(
-            totalAccounts: 57,
-            totalTransactions: 824,
-            totalMints: 750,
-            totalTransfers: 74,
-            totalMinted: 4324856
-        ),
-        iosCount: 8,
-        androidCount: 11,
-        onBack: {}
-    )
+    NavigationStack {
+        NetworkStatusView(
+            ledgerStats: LedgerStats(
+                totalAccounts: 57,
+                totalTransactions: 824,
+                totalMints: 750,
+                totalTransfers: 74,
+                totalMinted: 4324856
+            ),
+            iosCount: 8,
+            androidCount: 11
+        )
+    }
 }
