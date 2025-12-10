@@ -268,7 +268,8 @@ class RegistrationViewModel: ObservableObject {
                 // Return to main screen
                 isTransferring = false
                 loadMainScreen()
-                
+                popNavigation()
+
             } catch {
                 print("❌ Transfer failed: \(error)")
                 toastMessage = "Transfer failed: \(error.localizedDescription)"
