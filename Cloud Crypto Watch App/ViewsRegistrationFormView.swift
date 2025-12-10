@@ -54,18 +54,19 @@ struct RegistrationFormView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(serialNumber.isEmpty)
+
+                    Button(action: onCancel) {
+                        Text("CANCEL")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
                 }
             }
             .padding()
         }
         .navigationTitle("Register")
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") {
-                    onCancel()
-                }
-            }
-        }
     }
 }
 
