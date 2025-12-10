@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A8094E2B2ED78A0E002B653D /* ViewsNetworkStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8094E2A2ED78A0E002B653D /* ViewsNetworkStatusView.swift */; };
+		3E6F4504E126472D9BEBD2BB /* ViewsNetworkStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB774088EFD403ABCF3B4FD /* ViewsNetworkStatusView.swift */; };
 		A8EE92EC2ECF4925009D5F50 /* Cloud Crypto Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A8EE92EB2ECF4925009D5F50 /* Cloud Crypto Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -36,7 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A8094E2A2ED78A0E002B653D /* ViewsNetworkStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewsNetworkStatusView.swift; sourceTree = "<group>"; };
+		ACB774088EFD403ABCF3B4FD /* ViewsNetworkStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewsNetworkStatusView.swift; sourceTree = "<group>"; };
 		A8EE92E52ECF4925009D5F50 /* Cloud Crypto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cloud Crypto.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8EE92EB2ECF4925009D5F50 /* Cloud Crypto Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cloud Crypto Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -65,7 +65,7 @@
 			children = (
 				A8EE92EF2ECF4925009D5F50 /* Cloud Crypto Watch App */,
 				A8EE92E62ECF4925009D5F50 /* Products */,
-				A8094E2A2ED78A0E002B653D /* ViewsNetworkStatusView.swift */,
+				ACB774088EFD403ABCF3B4FD /* ViewsNetworkStatusView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -182,7 +182,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8094E2B2ED78A0E002B653D /* ViewsNetworkStatusView.swift in Sources */,
+				3E6F4504E126472D9BEBD2BB /* ViewsNetworkStatusView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
