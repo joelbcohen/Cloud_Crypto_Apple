@@ -1,0 +1,12 @@
+# APNs Authentication Keys - NEVER commit these!
+*.p8
+*.p12
+*.pem
+
+# Configuration files with credentials
+apns-config-local.php
+
+# Test scripts with real tokens (but not diagnostic tools)
+test-send-*.php
+test-live-*.php
+my-test-*.php
