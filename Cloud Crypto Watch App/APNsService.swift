@@ -37,7 +37,7 @@ class APNsService: NSObject, ObservableObject {
     // MARK: - Token Registration
     
     func registerForRemoteNotifications() {
-        WKExtension.shared().registerForRemoteNotifications()
+        WKApplication.shared().registerForRemoteNotifications()
     }
     
     func setDeviceToken(_ tokenData: Data) {

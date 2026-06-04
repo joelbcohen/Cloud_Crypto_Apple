@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Registration Request
 
-struct RegistrationRequest: Codable {
+nonisolated struct RegistrationRequest: Codable {
     let serialNumber: String
     let id: String  // Device identifier
     let fcmToken: String?  // APNs token for watchOS
@@ -32,7 +32,7 @@ struct RegistrationRequest: Codable {
 
 // MARK: - Registration Response
 
-struct RegistrationResponse: Codable {
+nonisolated struct RegistrationResponse: Codable {
     let status: String?
     let message: String?
     let registrationId: String?
@@ -45,7 +45,7 @@ struct RegistrationResponse: Codable {
 
 // MARK: - Deregistration Request
 
-struct DeregistrationRequest: Codable {
+nonisolated struct DeregistrationRequest: Codable {
     let publicKey: String
     let attestationBlob: String
     let serialNumber: String
@@ -53,7 +53,7 @@ struct DeregistrationRequest: Codable {
 
 // MARK: - Deregistration Response
 
-struct DeregistrationResponse: Codable {
+nonisolated struct DeregistrationResponse: Codable {
     let status: String?
     let message: String?
 }

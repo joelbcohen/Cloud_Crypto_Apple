@@ -11,7 +11,7 @@ import WatchKit
 @main
 struct Cloud_Crypto_Watch_AppApp: App {
     @StateObject private var apnsService = APNsService()
-    @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate
+    @WKApplicationDelegateAdaptor(ApplicationDelegate.self) var applicationDelegate
     
     init() {
         // Store reference to APNsService for the extension delegate
@@ -24,7 +24,7 @@ struct Cloud_Crypto_Watch_AppApp: App {
                 .environmentObject(apnsService)
                 .onAppear {
                     // Set the static reference after StateObject is initialized
-                    ExtensionDelegate.apnsService = apnsService
+                    ApplicationDelegate.apnsService = apnsService
                     requestNotificationPermission()
                 }
         }
@@ -48,7 +48,7 @@ struct Cloud_Crypto_Watch_AppApp: App {
 
 // MARK: - Extension Delegate
 
-class ExtensionDelegate: NSObject, WKExtensionDelegate {
+class ApplicationDelegate: NSObject, WKApplicationDelegate {
     
     // Shared reference to APNsService
     static var apnsService: APNsService?
@@ -64,7 +64,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         
         // Set the token on the APNsService instance
         Task { @MainActor in
-            if let apnsService = ExtensionDelegate.apnsService {
+            if let apnsService = ApplicationDelegate.apnsService {
                 apnsService.setDeviceToken(deviceToken)
                 print("✅ Token set on APNsService")
             } else {

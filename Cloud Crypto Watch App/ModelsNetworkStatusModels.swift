@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Network Status Response
 
-struct NetworkStatusResponse: Codable {
+nonisolated struct NetworkStatusResponse: Codable {
     let status: String?
     let blockchainVersion: String?
     let ledgerStats: LedgerStats?
@@ -25,7 +25,7 @@ struct NetworkStatusResponse: Codable {
 
 // MARK: - Ledger Stats
 
-struct LedgerStats: Codable, Equatable {
+nonisolated struct LedgerStats: Codable, Equatable {
     let totalAccounts: Int?
     let totalTransactions: Int?
     let totalMints: Int?
@@ -43,13 +43,13 @@ struct LedgerStats: Codable, Equatable {
 
 // MARK: - Device Stats
 
-struct DeviceStats: Codable, Equatable {
+nonisolated struct DeviceStats: Codable, Equatable {
     let ios: DeviceCount?
     let android: DeviceCount?
 }
 
 // MARK: - Device Count
 
-struct DeviceCount: Codable, Equatable {
+nonisolated struct DeviceCount: Codable, Equatable {
     let count: Int?
 }

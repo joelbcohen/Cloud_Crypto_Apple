@@ -9,7 +9,7 @@ import Foundation
 
 // MARK: - Account Summary Request
 
-struct AccountSummaryRequest: Codable {
+nonisolated struct AccountSummaryRequest: Codable {
     let serialNumber: String
     let publicKey: String
     let attestationBlob: String
@@ -17,7 +17,7 @@ struct AccountSummaryRequest: Codable {
 
 // MARK: - Account Summary Response
 
-struct AccountSummaryResponse: Codable {
+nonisolated struct AccountSummaryResponse: Codable {
     let status: String?
     let message: String?
     let account: AccountSummaryData?
@@ -26,7 +26,7 @@ struct AccountSummaryResponse: Codable {
 
 // MARK: - Transaction
 
-struct Transaction: Codable, Identifiable, Equatable {
+nonisolated struct Transaction: Codable, Identifiable, Equatable {
     let id: Int
     let txHash: String?
     let txType: String?
@@ -86,7 +86,7 @@ struct Transaction: Codable, Identifiable, Equatable {
 
 // MARK: - Account Summary Data
 
-struct AccountSummaryData: Codable, Equatable {
+nonisolated struct AccountSummaryData: Codable, Equatable {
     let id: Int?
     let balance: String?
     let serialNumber: String?
@@ -120,7 +120,7 @@ struct AccountSummaryData: Codable, Equatable {
 
 // MARK: - Transfer Request
 
-struct TransferRequest: Codable {
+nonisolated struct TransferRequest: Codable {
     let serialNumber: String
     let publicKey: String
     let attestationBlob: String
@@ -131,7 +131,7 @@ struct TransferRequest: Codable {
 
 // MARK: - Transfer Response
 
-struct TransferResponse: Codable {
+nonisolated struct TransferResponse: Codable {
     let status: String?
     let message: String?
     let transactionId: Int?
