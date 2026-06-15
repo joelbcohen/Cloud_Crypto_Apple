@@ -1,0 +1,125 @@
+//
+//  AccountModels.swift
+//  Cloud Crypto iOS App
+//
+
+import Foundation
+
+// MARK: - Account Summary Request
+
+nonisolated struct AccountSummaryRequest: Codable {
+    let serialNumber: String
+    let publicKey: String
+    let attestationBlob: String
+}
+
+// MARK: - Account Summary Response
+
+nonisolated struct AccountSummaryResponse: Codable {
+    let status: String?
+    let message: String?
+    let account: AccountSummaryData?
+    let transactions: [Transaction]?
+}
+
+// MARK: - Transaction
+
+nonisolated struct Transaction: Codable, Identifiable, Equatable {
+    let id: Int
+    let txHash: String?
+    let txType: String?
+    let amount: String?
+    let status: String?
+    let memo: String?
+    let createdAt: String?
+    let completedAt: String?
+    let fromId: Int?
+    let toId: Int?
+    let direction: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case txHash = "tx_hash"
+        case txType = "tx_type"
+        case amount, status, memo
+        case createdAt = "created_at"
+        case completedAt = "completed_at"
+        case fromId = "from_id"
+        case toId = "to_id"
+        case direction
+    }
+
+    var formattedCompletedAt: String? {
+        guard let completedAt = completedAt else { return nil }
+
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        guard let date = inputFormatter.date(from: completedAt) else { return nil }
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "MMM d yyyy h:mm a"
+        outputFormatter.locale = Locale(identifier: "en_US")
+
+        return outputFormatter.string(from: date)
+    }
+}
+
+// MARK: - Account Summary Data
+
+nonisolated struct AccountSummaryData: Codable, Equatable {
+    let id: Int?
+    let balance: String?
+    let serialNumber: String?
+    let serialHash: String?
+    let model: String?
+    let brand: String?
+    let osVersion: String?
+    let nodeId: String?
+    let totalSentTransactions: Int
+    let totalReceivedTransactions: Int
+    let totalSentAmount: String?
+    let totalReceivedAmount: String?
+    let accountCreatedAt: String?
+    let lastActivity: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id, balance
+        case serialNumber = "serial_number"
+        case serialHash = "serial_hash"
+        case model, brand
+        case osVersion = "os_version"
+        case nodeId = "node_id"
+        case totalSentTransactions = "total_sent_transactions"
+        case totalReceivedTransactions = "total_received_transactions"
+        case totalSentAmount = "total_sent_amount"
+        case totalReceivedAmount = "total_received_amount"
+        case accountCreatedAt = "account_created_at"
+        case lastActivity = "last_activity"
+    }
+}
+
+// MARK: - Transfer Request
+
+nonisolated struct TransferRequest: Codable {
+    let serialNumber: String
+    let publicKey: String
+    let attestationBlob: String
+    let toAccountId: String
+    let amount: String
+    let memo: String?
+}
+
+// MARK: - Transfer Response
+
+nonisolated struct TransferResponse: Codable {
+    let status: String?
+    let message: String?
+    let transactionId: Int?
+    let fromAccountId: Int?
+    let toAccountId: Int?
+    let amount: String?
+    let fcmNotificationSent: Bool?
+    let newBalance: String?
+}
