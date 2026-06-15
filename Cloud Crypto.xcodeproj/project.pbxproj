@@ -375,6 +375,8 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Cloud Crypto iOS App/Cloud Crypto iOS App.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Cloud Crypto iOS App/Cloud Crypto iOS App-MacCatalyst.entitlements";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 3Q233SX34Z;
@@ -391,10 +393,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 6.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.callista3.CloudCryptoPhone";
+				PRODUCT_BUNDLE_IDENTIFIER = io.callista3.CloudCryptoPhone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -411,6 +415,8 @@
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "Cloud Crypto iOS App/Cloud Crypto iOS App.entitlements";
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "Cloud Crypto iOS App/Cloud Crypto iOS App-MacCatalyst.entitlements";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.finance";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 3Q233SX34Z;
@@ -427,10 +433,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 6.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "io.callista3.CloudCryptoPhone";
+				PRODUCT_BUNDLE_IDENTIFIER = io.callista3.CloudCryptoPhone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
