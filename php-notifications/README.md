@@ -2,6 +2,8 @@
 
 This directory contains PHP code for sending push notifications to Apple Watch devices using the modern HTTP/2 APNs API with token-based authentication.
 
+Small change to test push pull
+
 ## Overview
 
 The solution consists of:
