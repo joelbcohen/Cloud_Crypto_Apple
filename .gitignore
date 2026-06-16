@@ -39,10 +39,18 @@ fastlane/test_output/
 # macOS
 .DS_Store
 
-# Certificates and provisioning
+# Certificates, keys, and provisioning
 *.p12
+*.p8
+*.pem
 *.mobileprovision
 *.cer
+
+# APNs / local credential config
+php-notifications/apns-config-local.php
+
+# Packaged archives (don't commit binary snapshots of source)
+apns-php-notifications.zip
 
 # Logs
 *.log
